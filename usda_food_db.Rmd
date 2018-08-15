@@ -1,0 +1,17 @@
+---
+title: "USDA Food Database"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(jsonlite)
+```
+
+## Loading the data  
+
+```{r}
+path <- "datasets/usda_food/database.json"
+db <- fromJSON(path)
+```
+

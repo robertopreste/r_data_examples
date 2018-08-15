@@ -1,0 +1,50 @@
+---
+title: "US Baby Names 1880-2010"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+## Loading the data  
+
+This dataset is split by year, so we'll assemble these files into a single dataframe, to which we'll add a new `year` column.  
+
+```{r}
+years <- c(1880:2010)
+names <- tibble("name" = NA, "sex" = NA, "births" = NA, "year" = NA)
+
+for (year in years) {
+    path <- str_c("datasets/babynames/yob", year, ".txt", sep = "")
+    frame <- read_csv(path, col_names = c("name", "sex", "births"), 
+                      col_types = cols(col_character(), col_character(), col_integer()))
+    frame <- frame %>% mutate("year" = year)
+    names <- names %>% bind_rows(frame)
+}
+names <- names %>% drop_na()
+```
+
+We can now start aggregating this data by year and sex.  
+
+```{r}
+total_births <- names %>% 
+    group_by(year, sex) %>% 
+    summarise(tot_births = sum(births)) # %>% 
+    # spread(sex, tot_births)
+```
+
+Let's plot these data to view the total number of births per sex from 1880.  
+```{r}
+total_births %>% ggplot(aes(x = year, y = tot_births, color = sex)) + 
+    geom_line() + 
+    labs(x = "Year", y = "Births", title = "Total number of births per sex")
+```
+
+Now we'll insert a new column that will contain the proportion of babies with each name relative to the total number of births for a given year.  
+
+```{r}
+
+```
+
+

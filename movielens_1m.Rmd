@@ -1,0 +1,112 @@
+---
+title: "MovieLens 1M Dataset"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+## Loading the data  
+
+This dataset is split over 3 files, containing different information. The `movies` dataset contains movies information, the `users` dataset contains voting users information and the `ratings` dataset contains movie ratings.  
+To my knowledge, no `R` package is capable of reading a file with double characters as column delimiter, as is in this case, where each column in the files is delimited using `::`. For this reason, we are first going to read in the entire raw files, replace occurrences of `::` with `_`, and then parse the datasets using a classic `read_delim`. Any other delimiter can be used instead of `_`, as long as it is not already present in the file (otherwise you will have issues when trying to load the data).  
+
+```{r}
+users <- read_file("datasets/movielens/users.dat") %>% 
+    str_replace_all("::", "_") %>% 
+    read_delim(delim = "_", col_names = c("user_id", "gender", "age", "occupation", "zip"))
+ratings <- read_file("datasets/movielens/ratings.dat") %>% 
+    str_replace_all("::", "_") %>% 
+    read_delim(delim = "_", col_names = c("user_id", "movie_id", "rating", "timestamp"))
+movies <- read_file("datasets/movielens/movies.dat") %>% 
+    str_replace_all("::", "_") %>% 
+    read_delim(delim = "_", col_names = c("movie_id", "title", "genres"))
+```
+
+In order to access these data easily, we will merge them into a single dataframe instead of having data spread across 3 different tables.  
+
+```{r}
+mov_data <- ratings %>% 
+    full_join(users, by = "user_id") %>% 
+    full_join(movies, by = "movie_id")
+```
+
+Let's check the average rating for each movie grouped by gender of voting users.  
+
+```{r}
+mean_ratings <- mov_data %>% 
+    group_by(title, gender) %>% 
+    summarise(mean_rating = mean(rating)) %>% 
+    spread(gender, mean_rating, fill = 0) %>% 
+    select(-`<NA>`)
+```
+
+We may want to filter this dataframe to keep only movies that were rated by at least 250 users. So let's get the total number of users that rated each movie.  
+
+```{r}
+ratings_by_title <- mov_data %>% 
+    group_by(title) %>% 
+    summarise(voting_users = n())
+```
+
+```{r}
+active_titles <- ratings_by_title %>% 
+    filter(voting_users >= 250)
+```
+
+Now we can get the mean rating for this new subset of movies.  
+
+```{r}
+active_mean_ratings <- mean_ratings %>% 
+    filter(title %in% active_titles$title)
+```
+
+Let's view the top rated movies across men and women voters.  
+
+```{r}
+top_male_ratings <- active_mean_ratings %>% 
+    arrange(desc(M)) %>% 
+    select(title, M)
+```
+
+```{r}
+top_female_ratings <- active_mean_ratings %>% 
+    arrange(desc(F)) %>% 
+    select(title, F)
+```
+
+## Measuring rating disagreement  
+
+If we want to find movies that are most divisive between male and female viewers, we can add a new `mean_diff` column to the `mean_ratings` dataset, showing the difference in mean rating across both genders.  
+
+```{r}
+active_mean_ratings <- active_mean_ratings %>% 
+    mutate(mean_diff = M - F)
+```
+
+Sorting the dataset by this new column in ascending order will return movies that were rated higher by women, while sorting in descending order will return movies rated higher by men.  
+
+```{r}
+high_ratings_male <- active_mean_ratings %>% 
+    arrange(desc(mean_diff))
+high_ratings_female <- active_mean_ratings %>% 
+    arrange(mean_diff)
+```
+
+Movies that elicited the most disagreement among all viewers (both male and female) can be found by exploiting the standard deviation of ratings.  
+
+```{r}
+rating_std_by_title <- mov_data %>% 
+    group_by(title) %>% 
+    summarise(std = sd(rating))
+```
+
+We will only keep movies that were rated at least 250 times, as before, and sort the data to find the most controverse titles.  
+
+```{r}
+rating_std_by_title <- rating_std_by_title %>% 
+    filter(title %in% active_mean_ratings$title) %>% 
+    arrange(desc(std))
+```
+

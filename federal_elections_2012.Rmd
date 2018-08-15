@@ -1,0 +1,197 @@
+---
+title: "2012 Federal Election Commission Database"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+## Loading the data  
+
+```{r}
+fec <- read_csv("datasets/fec/P00000001-ALL.csv")
+```
+
+We can add another column to report if the candidate is a Republican or Democrat. In order to do that, we will simply add `"Democrat"` to every Barack Obama entry, and `"Republican"` to all the others.  
+
+```{r}
+fec <- fec %>% 
+    mutate(party = case_when(cand_nm == "Obama, Barack" ~ "Democrat", 
+                             TRUE ~ "Republican"))
+```
+
+Let's restrict the dataset to only positive contributions, removing refunds.  
+
+```{r}
+fec <- fec %>% 
+    filter(contb_receipt_amt > 0)
+```
+
+
+## Donation statistics by Occupation and Employer  
+
+Let's see if there is any trend of donations amount based on donators occupation and employer.  
+
+```{r}
+fec %>% group_by(contbr_occupation) %>% summarise(count = n()) %>% arrange(desc(count))
+```
+
+```{r}
+fec %>% group_by(contbr_employer) %>% summarise(count = n()) %>% arrange(desc(count))
+```
+
+We should clean a bit these data, because some of them refer to the same type of employment but are encoded differently.  
+
+```{r}
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "INFORMATION REQUESTED PER BEST EFFORTS", replacement = "NOT PROVIDED")
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "INFORMATION REQUESTED", replacement = "NOT PROVIDED")
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "INFORMATION REQUESTED (BEST EFFORTS)", replacement = "NOT PROVIDED")
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "^NONE$", replacement = "NOT PROVIDED")
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "^REFUSED$", replacement = "NOT PROVIDED")
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "^REQUESTED$", replacement = "NOT PROVIDED")
+fec <- fec %>% replace_na(list(contbr_employer = "NOT PROVIDED", contbr_occupation = "NOT PROVIDED"))
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "^N/A$", replacement = "NOT PROVIDED") 
+
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "^C.E.O.$", replacement = "CEO")
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "^RN$", replacement = "REGISTERED NURSE") 
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "^R.N.$", replacement = "REGISTERED NURSE") 
+
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "^UNEMPLOYED$", replacement = "NOT EMPLOYED")
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "^SELF$", replacement = "SELF-EMPLOYED") 
+fec <- fec %>% mutate_if(is_character, str_replace_all, pattern = "SELF EMPLOYED", replacement = "SELF-EMPLOYED") 
+```
+
+```{r}
+fec %>% group_by(contbr_occupation) %>% summarise(count = n()) %>% arrange(desc(count))
+```
+
+```{r}
+fec %>% group_by(contbr_employer) %>% summarise(count = n()) %>% arrange(desc(count))
+```
+
+After this cleaning, let's create another dataset where we remove all candidates but Barack Obama and Mitt Romney, the main two candidates for this election.  
+
+```{r}
+fec_mrbo <- fec %>% 
+    filter(cand_nm %in% c("Obama, Barack", "Romney, Mitt"))
+```
+
+
+Now we can aggregate the data by occupation and party, and further filter it to keep only occupations that donated over $2 million.  
+
+```{r}
+by_occupation <- fec %>% 
+    group_by(contbr_occupation, party) %>% 
+    summarise(donations = sum(contb_receipt_amt))
+```
+
+```{r}
+over_2mm <- by_occupation %>% 
+    filter(donations >= 2000000)
+```
+
+Let's view these data.  
+
+```{r}
+over_2mm %>% 
+    ggplot(aes(x = reorder(contbr_occupation, donations))) + 
+    geom_col(aes(y = donations, fill = party), position = "dodge") + 
+    coord_flip() +
+    labs(x = "Occupation", y = "Donations (US$)", fill = "Party")
+```
+
+Now we might be interested in aggregating these data by candidate name and occupation or employer, to find the top 10 occupations and employers who donated to the two candidates.  
+
+```{r}
+occupation_grouped <- fec_mrbo %>% 
+    group_by(cand_nm, contbr_occupation) %>% 
+    summarise(donations = sum(contb_receipt_amt))
+top_10_occup <- top_n(occupation_grouped, 10, donations)
+```
+
+```{r}
+employer_grouped <- fec_mrbo %>% 
+    group_by(cand_nm, contbr_employer) %>% 
+    summarise(donations = sum(contb_receipt_amt))
+top_10_empl <- top_n(employer_grouped, 10, donations)
+```
+
+Let's now visualize these two sets.  
+
+```{r}
+top_10_occup %>% 
+    ggplot(aes(x = reorder(contbr_occupation, donations))) + 
+    geom_col(aes(y = donations, fill = cand_nm), position = "dodge") + 
+    coord_flip() + 
+    labs(x = "Occupation", y = "Donations (US$)", fill = "Candidate")
+```
+
+```{r}
+top_10_empl %>% 
+    ggplot(aes(x = reorder(contbr_employer, donations))) + 
+    geom_col(aes(y = donations, fill = cand_nm), position = "dodge") + 
+    coord_flip() + 
+    labs(x = "Employer", y = "Donations (US$)", fill = "Candidate")
+```
+
+
+## Bucketing donation amounts  
+
+We can discretize the contribution amounts into bins describing the contribution size.  
+
+```{r}
+fec_mrbo <- fec_mrbo %>% 
+    mutate(contb_bin = cut(contb_receipt_amt, 
+                           breaks = c(0, 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000)))
+```
+
+Now it is possible to aggregate these data by candidate and contribution bin, to get a histogram by donation size.  
+
+```{r}
+contrib_grouped <- fec_mrbo %>% 
+    group_by(contb_bin, cand_nm) %>% 
+    summarise(donations = n()) %>% 
+    mutate(donation_perc = donations / sum(donations))
+```
+
+```{r}
+contrib_grouped 
+```
+
+```{r}
+contrib_grouped %>% 
+    filter(donation_perc != 1.0) %>% 
+    ggplot(aes(x = contb_bin)) + 
+    geom_col(aes(y = donation_perc, fill = cand_nm)) + 
+    coord_flip() + 
+    labs(x = "Donation bins", y = "Percentage of donations", fill = "Candidate") + 
+    scale_x_discrete(labels = c("(0, 1]", "(1, 10]", "(10, 100]", "(100, 1000]", "(1000, 10000]", "(10000, 100000]"))
+```
+
+
+## Donation statistics by State  
+
+Let's aggregate the data by candidate name and state.  
+
+```{r}
+state_grouped <- fec_mrbo %>% 
+    group_by(contbr_st, cand_nm) %>% 
+    summarise(donations = sum(contb_receipt_amt)) %>% 
+    mutate(donation_perc = donations / sum(donations))
+```
+
+```{r}
+state_grouped
+```
+
+```{r, fig.height=4}
+state_grouped %>% 
+    filter(donation_perc != 1.0, donation_perc >= 0.1, donation_perc <= 0.9) %>% 
+    ggplot(aes(x = contbr_st)) + 
+    geom_col(aes(y = donation_perc, fill = cand_nm), position = "dodge") + 
+    coord_flip() + 
+    labs(x = "US State", y = "Percentage of donations", fill = "Candidate")
+```
+
+
