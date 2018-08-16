@@ -10,8 +10,34 @@ library(jsonlite)
 
 ## Loading the data  
 
+This data come from the US Department of Agriculture and report a set of food nutrient information. These data were made available by Ashley Williams in JSON format, where each food has a number of identifying attributes along with two lists of nutrients and portion sizes.  
+
 ```{r}
 path <- "datasets/usda_food/database.json"
-db <- fromJSON(path)
+db <- as_tibble(fromJSON(path, flatten = T))
 ```
+
+```{r}
+head(db)
+```
+
+Some of the features in this dataset are actually nested dataframes, as in `nutrients`.  
+
+```{r}
+db[[1, "nutrients"]]
+```
+
+Without going too much in details, let's grep a subset of these information by selecting the `id`, `description`, `group` and `manufacturer` columns.  
+
+```{r}
+info <- db %>% 
+    select(id, description, group, manufacturer)
+```
+
+Now let's see the distribution of food groups.  
+
+```{r}
+info %>% count(group, sort = T)
+```
+
 
