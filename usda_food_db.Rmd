@@ -27,17 +27,71 @@ Some of the features in this dataset are actually nested dataframes, as in `nutr
 db[[1, "nutrients"]]
 ```
 
-Without going too much in details, let's grep a subset of these information by selecting the `id`, `description`, `group` and `manufacturer` columns.  
+Without going too much in details, let's grep a subset of these information by selecting the `id`, `description`, `group` and `manufacturer` columns. In addition, we will rename the `description` and `group` columns to `food` and `fgroup`, respectively.  
 
 ```{r}
 info <- db %>% 
-    select(id, description, group, manufacturer)
+    select(id, description, group, manufacturer) %>% 
+    rename(food = description, fgroup = group)
 ```
 
 Now let's see the distribution of food groups.  
 
 ```{r}
-info %>% count(group, sort = T)
+info %>% count(fgroup, sort = T)
+```
+
+Let's collect all of the nutrients into a single dataframe. First we will create a vector with the ids that will then be added to each nutrient dataframe.  
+
+```{r}
+ids <- c()
+for (elem in db$id) {
+    ids <- append(ids, rep(elem, dim(subset(db, id == elem)[["nutrients"]][[1]])[1]))
+}
+```
+
+```{r}
+nutr_rows <- bind_rows(db$nutrients)
+```
+
+```{r}
+nutrients <- 
+    bind_cols(id = ids, nutr_rows) %>% 
+    rename(nutrient = description, nutgroup = group)
+```
+
+Now we can merge the previously created `info` dataframe with `nutrients`.  
+
+```{r}
+ndata <- full_join(info, nutrients, by = "id")
+```
+
+Let's calculate median values by food group and nutrient type.  
+
+```{r}
+result <- ndata %>% 
+    group_by(nutrient, fgroup) %>% 
+    summarise(quant = median(value))
+```
+
+Now we can view which foods contain most Zinc.  
+
+```{r}
+result %>% 
+    filter(nutrient == "Zinc, Zn") %>% 
+    ggplot(aes(x = reorder(fgroup, quant), y = quant, fill = fgroup)) + 
+    geom_col() + 
+    coord_flip() + 
+    guides(fill = F) + 
+    labs(x = "Food group", y = "Median value", title = "Median Zinc content")
+```
+
+We can also check which food is most dense in each nutrient.  
+
+```{r}
+by_nutrient <- ndata %>% 
+    group_by(nutgroup, nutrient) %>% 
+    summarise(max_value = max(value))
 ```
 
 
