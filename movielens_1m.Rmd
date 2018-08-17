@@ -16,9 +16,11 @@ To my knowledge, no `R` package is capable of reading a file with double charact
 users <- read_file("datasets/movielens/users.dat") %>% 
     str_replace_all("::", "_") %>% 
     read_delim(delim = "_", col_names = c("user_id", "gender", "age", "occupation", "zip"))
+
 ratings <- read_file("datasets/movielens/ratings.dat") %>% 
     str_replace_all("::", "_") %>% 
     read_delim(delim = "_", col_names = c("user_id", "movie_id", "rating", "timestamp"))
+
 movies <- read_file("datasets/movielens/movies.dat") %>% 
     str_replace_all("::", "_") %>% 
     read_delim(delim = "_", col_names = c("movie_id", "title", "genres"))
@@ -76,12 +78,13 @@ top_female_ratings <- active_mean_ratings %>%
     select(title, F)
 ```
 
+
 ## Measuring rating disagreement  
 
 If we want to find movies that are most divisive between male and female viewers, we can add a new `mean_diff` column to the `mean_ratings` dataset, showing the difference in mean rating across both genders.  
 
 ```{r}
-active_mean_ratings <- active_mean_ratings %>% 
+active_mean_ratings %<>%  
     mutate(mean_diff = M - F)
 ```
 
@@ -105,7 +108,7 @@ rating_std_by_title <- mov_data %>%
 We will only keep movies that were rated at least 250 times, as before, and sort the data to find the most controverse titles.  
 
 ```{r}
-rating_std_by_title <- rating_std_by_title %>% 
+rating_std_by_title %<>% 
     filter(title %in% active_mean_ratings$title) %>% 
     arrange(desc(std))
 ```
