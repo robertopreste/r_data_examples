@@ -21,7 +21,7 @@ records <- stream_in(file(path))
 Converting `records` object to a tibble.  
 
 ```{r}
-records <- as_tibble(records)
+records %<>% as_tibble()
 ```
 
 
@@ -29,57 +29,60 @@ records <- as_tibble(records)
 
 ```{r}
 tz_counts <- records %>% 
-    group_by(tz) %>% 
-    summarise(n = n())
+    count(tz) 
 ```
 
 Let's replace missing values. 
 
 ```{r}
-tz_counts <- tz_counts %>% 
+tz_counts %<>%  
     mutate(tz = replace(tz, tz == "", "Missing"))
-tz_counts$tz <- tz_counts$tz %>% 
+tz_counts$tz %<>%  
     replace_na("Unknown")
 ```
 
 Sort entries in descending order. 
 
 ```{r}
-tz_counts <- tz_counts %>% 
+tz_counts %<>%  
     arrange(desc(n))
 ```
 
 Let's plot a bar chart with the first 10 entries from `tz_counts`.  
 
 ```{r}
-head(tz_counts, n = 10) %>% ggplot(aes(x = reorder(tz, n), y = n, fill = tz)) + 
-    geom_bar(stat = "identity") + 
+head(tz_counts, n = 10) %>% 
+    ggplot(aes(x = reorder(tz, n), y = n, fill = tz)) + 
+    geom_col() + 
     coord_flip() + 
     guides(fill = F) + 
-    labs(title = "Top time zones", x = "time zones", y = "count")
+    labs(title = "Top time zones", x = "Time zone", y = "Count")
 ```
 
 Let's parse the `a` column to get some information about most common browsers used.  
 
 ```{r}
-records <- records %>% 
+records %<>%  
     mutate(browsers = str_split_fixed(records$a, " ", n = 2)[, 1])
 ```
 
 ```{r}
-records %>% count(browsers) %>% arrange(desc(n))
+records %>% 
+    count(browsers) %>% 
+    arrange(desc(n))
 ```
 
 Now we want to decompose time zones into Windows and non-Windows users. We can achieve that by looking at the `a` variable, checking whether it contains the `Windows` string or not. Some of the browser agents are missing, so we'll first drop rows where the `a` column is empty.  
 
 ```{r}
-records_notnull <- records %>% drop_na(a)
+records_notnull <- records %>% 
+    drop_na(a)
 ```
 
 Then we'll create a new column, `os`, which will contain the `Win` value for Windows users and `NonWin` otherwise.  
 
 ```{r}
-records_notnull <- records_notnull %>% 
+records_notnull %<>%  
     mutate(os = case_when(str_detect(a, "Windows") ~ "Win", 
                           TRUE ~ "NonWin"))
 ```
@@ -97,7 +100,9 @@ head(agg_counts)
 Let's add a `total` column that will be useful to sort our data based on the total number of users; for visualization purposes, we'll take the first 10 entries in this list.  
 
 ```{r}
-agg_counts <- agg_counts %>% mutate(total = sum(NonWin, Win)) %>% arrange(desc(total))
+agg_counts %<>%  
+    mutate(total = sum(NonWin, Win)) %>% 
+    arrange(desc(total))
 agg_counts_top10 <- agg_counts[1:10, ]
 ```
 
@@ -111,24 +116,28 @@ count_subset <- agg_counts_top10 %>%
 ```
 
 ```{r}
-count_subset %>% ggplot(aes(x = reorder(tz, users), y = users, fill = os)) + 
-    geom_bar(stat = "identity", position = "dodge") + 
-    coord_flip()
+count_subset %>% 
+    ggplot(aes(x = reorder(tz, users), y = users, fill = os)) + 
+    geom_col(position = "dodge") + 
+    coord_flip() + 
+    labs(x = "Time zone", y = "Users", title = "Windows and non-Windows users per time zone", fill = "OS")
 ```
 
 Let's normalize the count of users so the sum of Windows and non-Windows users is 1.  
 
 ```{r}
-count_subset <- count_subset %>% 
+count_subset %<>% 
     group_by(tz, os) %>% 
     summarise(users = users) %>% 
     mutate(normed_total = users / sum(users))
 ```
 
 ```{r}
-count_subset %>% ggplot(aes(x = reorder(tz, users), y = normed_total, fill = os)) + 
-    geom_bar(stat = "identity", position = "dodge") + 
-    coord_flip()
+count_subset %>% 
+    ggplot(aes(x = reorder(tz, users), y = normed_total, fill = os)) + 
+    geom_col(position = "dodge") + 
+    coord_flip() + 
+    labs(x = "Time zone", y = "User ration", title = "Windows and non-Windows users ratio per time zone", fill = "OS")
 ```
 
 
