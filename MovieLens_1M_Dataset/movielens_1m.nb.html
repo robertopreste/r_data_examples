@@ -9,7 +9,9 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="Roberto Preste" />
 
+<meta name="date" content="2018-09-06" />
 
 <title>MovieLens 1M Dataset</title>
 
@@ -171,32 +173,41 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">MovieLens 1M Dataset</h1>
+<h4 class="author"><em>Roberto Preste</em></h4>
+<h4 class="date"><em>2018-09-06</em></h4>
 
 </div>
 
 
 <!-- rnb-text-begin -->
+<p>From the book (chapter 14.2):</p>
+<blockquote>
+<p><a href="http://www.grouplens.org/node/73">GroupLens Research</a> provides a number of collections of movie ratings data collected from users of MovieLens in the late 1990s and early 2000s. The data provide movie ratings, movie metadata (genres and year), and demographic data about the users (age, zip code, gender identification, and occupation). […] The MovieLens 1M dataset contains 1 million ratings collected from 6,000 users on 4,000 movies.</p>
+</blockquote>
+<hr />
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
-<pre class="r"><code>library(tidyverse)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KG1hZ3JpdHRyKVxuYGBgIn0= -->
+<pre class="r"><code>library(tidyverse)
+library(magrittr)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<hr />
 <div id="loading-the-data" class="section level2">
 <h2>Loading the data</h2>
-<p>This dataset is split over 3 files, containing different information. The <code>movies</code> dataset contains movies information, the <code>users</code> dataset contains voting users information and the <code>ratings</code> dataset contains movie ratings.<br />
-To my knowledge, no <code>R</code> package is capable of reading a file with double characters as column delimiter, as is in this case, where each column in the files is delimited using <code>::</code>. For this reason, we are first going to read in the entire raw files, replace occurrences of <code>::</code> with <code>_</code>, and then parse the datasets using a classic <code>read_delim</code>. Any other delimiter can be used instead of <code>_</code>, as long as it is not already present in the file (otherwise you will have issues when trying to load the data).</p>
+<p>This dataset is split over 3 files, containing different information. The <code>movies</code> dataset contains movies information, the <code>users</code> dataset contains voting users information and the <code>ratings</code> dataset contains movie ratings.</p>
+<p>To my knowledge, no <code>R</code> package is capable of reading a file with double characters as column delimiter, as is in this case, where each column in the files is delimited using <code>::</code>. For this reason, we are first going to read in the entire raw files, replace occurrences of <code>::</code> with <code>_</code>, and then parse the datasets using a classic <code>read_delim</code>. Any other delimiter can be used instead of <code>_</code>, as long as it is not already present in the file (otherwise you will have issues when trying to load the data).</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXNlcnMgPC0gcmVhZF9maWxlKFwiZGF0YXNldHMvbW92aWVsZW5zL3VzZXJzLmRhdFwiKSAlPiUgXG4gICAgc3RyX3JlcGxhY2VfYWxsKFwiOjpcIiwgXCJfXCIpICU+JSBcbiAgICByZWFkX2RlbGltKGRlbGltID0gXCJfXCIsIGNvbF9uYW1lcyA9IGMoXCJ1c2VyX2lkXCIsIFwiZ2VuZGVyXCIsIFwiYWdlXCIsIFwib2NjdXBhdGlvblwiLCBcInppcFwiKSlcbnJhdGluZ3MgPC0gcmVhZF9maWxlKFwiZGF0YXNldHMvbW92aWVsZW5zL3JhdGluZ3MuZGF0XCIpICU+JSBcbiAgICBzdHJfcmVwbGFjZV9hbGwoXCI6OlwiLCBcIl9cIikgJT4lIFxuICAgIHJlYWRfZGVsaW0oZGVsaW0gPSBcIl9cIiwgY29sX25hbWVzID0gYyhcInVzZXJfaWRcIiwgXCJtb3ZpZV9pZFwiLCBcInJhdGluZ1wiLCBcInRpbWVzdGFtcFwiKSlcbm1vdmllcyA8LSByZWFkX2ZpbGUoXCJkYXRhc2V0cy9tb3ZpZWxlbnMvbW92aWVzLmRhdFwiKSAlPiUgXG4gICAgc3RyX3JlcGxhY2VfYWxsKFwiOjpcIiwgXCJfXCIpICU+JSBcbiAgICByZWFkX2RlbGltKGRlbGltID0gXCJfXCIsIGNvbF9uYW1lcyA9IGMoXCJtb3ZpZV9pZFwiLCBcInRpdGxlXCIsIFwiZ2VucmVzXCIpKVxuYGBgIn0= -->
-<pre class="r"><code>users &lt;- read_file(&quot;datasets/movielens/users.dat&quot;) %&gt;% 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXNlcnMgPC0gcmVhZF9maWxlKFwiLi4vZGF0YXNldHMvbW92aWVsZW5zL3VzZXJzLmRhdFwiKSAlPiUgXG4gICAgc3RyX3JlcGxhY2VfYWxsKFwiOjpcIiwgXCJfXCIpICU+JSBcbiAgICByZWFkX2RlbGltKGRlbGltID0gXCJfXCIsIGNvbF9uYW1lcyA9IGMoXCJ1c2VyX2lkXCIsIFwiZ2VuZGVyXCIsIFwiYWdlXCIsIFwib2NjdXBhdGlvblwiLCBcInppcFwiKSlcbnJhdGluZ3MgPC0gcmVhZF9maWxlKFwiLi4vZGF0YXNldHMvbW92aWVsZW5zL3JhdGluZ3MuZGF0XCIpICU+JSBcbiAgICBzdHJfcmVwbGFjZV9hbGwoXCI6OlwiLCBcIl9cIikgJT4lIFxuICAgIHJlYWRfZGVsaW0oZGVsaW0gPSBcIl9cIiwgY29sX25hbWVzID0gYyhcInVzZXJfaWRcIiwgXCJtb3ZpZV9pZFwiLCBcInJhdGluZ1wiLCBcInRpbWVzdGFtcFwiKSlcbm1vdmllcyA8LSByZWFkX2ZpbGUoXCIuLi9kYXRhc2V0cy9tb3ZpZWxlbnMvbW92aWVzLmRhdFwiKSAlPiUgXG4gICAgc3RyX3JlcGxhY2VfYWxsKFwiOjpcIiwgXCJfXCIpICU+JSBcbiAgICByZWFkX2RlbGltKGRlbGltID0gXCJfXCIsIGNvbF9uYW1lcyA9IGMoXCJtb3ZpZV9pZFwiLCBcInRpdGxlXCIsIFwiZ2VucmVzXCIpKVxuYGBgIn0= -->
+<pre class="r"><code>users &lt;- read_file(&quot;../datasets/movielens/users.dat&quot;) %&gt;% 
     str_replace_all(&quot;::&quot;, &quot;_&quot;) %&gt;% 
     read_delim(delim = &quot;_&quot;, col_names = c(&quot;user_id&quot;, &quot;gender&quot;, &quot;age&quot;, &quot;occupation&quot;, &quot;zip&quot;))
-ratings &lt;- read_file(&quot;datasets/movielens/ratings.dat&quot;) %&gt;% 
+ratings &lt;- read_file(&quot;../datasets/movielens/ratings.dat&quot;) %&gt;% 
     str_replace_all(&quot;::&quot;, &quot;_&quot;) %&gt;% 
     read_delim(delim = &quot;_&quot;, col_names = c(&quot;user_id&quot;, &quot;movie_id&quot;, &quot;rating&quot;, &quot;timestamp&quot;))
-movies &lt;- read_file(&quot;datasets/movielens/movies.dat&quot;) %&gt;% 
+movies &lt;- read_file(&quot;../datasets/movielens/movies.dat&quot;) %&gt;% 
     str_replace_all(&quot;::&quot;, &quot;_&quot;) %&gt;% 
     read_delim(delim = &quot;_&quot;, col_names = c(&quot;movie_id&quot;, &quot;title&quot;, &quot;genres&quot;))</code></pre>
 <!-- rnb-source-end -->
@@ -212,6 +223,20 @@ movies &lt;- read_file(&quot;datasets/movielens/movies.dat&quot;) %&gt;%
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChtb3ZfZGF0YSlcbmBgYCJ9 -->
+<pre class="r"><code>head(mov_data)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MTAsIm5yb3ciOjZ9LCJyZGYiOiJINHNJQUFBQUFBQUFBNlZUVDI4U1FSUWZXTGFWVGJSTk1EMm9pWE95TnJHRVZncVVlS0ZVVEV6cmtzWkVibWFjbmNLa3U3TmtacGFLNGVCbk1QSG9CekN4OGFKZnprUHg3VHFEZ0J3MEh0N3N2UGY3dmIvNzV1eTR0Ky8xUElSUUhqbHVEdVVkdUJieWNPUlFBUlhUNzF1RW5CSmNVdEpOa0xVTVhDMEdMM3lHZUIvQjd3T1l1Z2dWSDRQdGFzN2ZCWEdNRk9iMERHLzZYM3ROLzlzbmtNMm1mNldhcjc3UXB2LzlDV0NibWI4cHJQTnZsNyt1UHV0MGxjeG5kNnVOU3EzKy84cGkxQWUrWUxnVHNrdnNqNWpFZXNCd082RVhjYnl0OEF1bU5INjRkMWcvMkRGcy9KeEVUR0VpZ296NWpCT2hjWmNST2toNWh6WExLNTJPY1lkd2lVOUlNRTZoV3RWQ1cwOGxGL2hJeHBCa3hGUEgvVXFsWXRIYlIwa2ZNcC93Yy9ZSXQ3S2dEWXZkNllJblpVcUJOdzhBZndrbEFLTlIzMWtlMWJFa0VUSEt2WmJnRWRFOEZwUDJnSWVCWkdKYlRVNFR4U2tKRFdmRHFKT3pPQ0tRWTFXY3V5dmp0T09JQldORHVkK2lHZDRLUmt6b1JESUR6OEl1THJwTFE2S1VxZDBhdllCb1VqNkh4SC9RUlRwOFEvZU1jVDFSVEw3bWdWRnZSREJVOWx0ZmsxQ3g2QnV0cURsRTBDUWFXcmpQUk1DazBSelN0NTE3TWFYSk1PdldndSs0OVhJMTF5R2JDeUhUc2hacUxjcjRzbXpyVGJjOC94Nk82WFQ2QXo3WFMrVDFlSmdtQW1xK1pKN20vRVJ5Y3Ntd2tZZzBkTEJMQjRtNDJLMmF4NUkrS0dUUzVjekRzbmZ2VjBwbmFrSzV0bm9tK2x6TS9uZEkzakM3RTdlZ2hheUQ4aEQyVHR2QmdGV1ZkYXhudStQUk9MU1dyRGQwL1JPbUtyN2o1QVFBQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["user_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["movie_id"],"name":[2],"type":["int"],"align":["right"]},{"label":["rating"],"name":[3],"type":["int"],"align":["right"]},{"label":["timestamp"],"name":[4],"type":["int"],"align":["right"]},{"label":["gender"],"name":[5],"type":["chr"],"align":["left"]},{"label":["age"],"name":[6],"type":["int"],"align":["right"]},{"label":["occupation"],"name":[7],"type":["int"],"align":["right"]},{"label":["zip"],"name":[8],"type":["chr"],"align":["left"]},{"label":["title"],"name":[9],"type":["chr"],"align":["left"]},{"label":["genres"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"1193","3":"5","4":"978300760","5":"F","6":"1","7":"10","8":"48067","9":"One Flew Over the Cuckoo's Nest (1975)","10":"Drama"},{"1":"1","2":"661","3":"3","4":"978302109","5":"F","6":"1","7":"10","8":"48067","9":"James and the Giant Peach (1996)","10":"Animation|Children's|Musical"},{"1":"1","2":"914","3":"3","4":"978301968","5":"F","6":"1","7":"10","8":"48067","9":"My Fair Lady (1964)","10":"Musical|Romance"},{"1":"1","2":"3408","3":"4","4":"978300275","5":"F","6":"1","7":"10","8":"48067","9":"Erin Brockovich (2000)","10":"Drama"},{"1":"1","2":"2355","3":"5","4":"978824291","5":"F","6":"1","7":"10","8":"48067","9":"Bug's Life, A (1998)","10":"Animation|Children's|Comedy"},{"1":"1","2":"1197","3":"3","4":"978302268","5":"F","6":"1","7":"10","8":"48067","9":"Princess Bride, The (1987)","10":"Action|Adventure|Comedy|Romance"}],"options":{"columns":{"min":{},"max":[10],"total":[10]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <p>Let’s check the average rating for each movie grouped by gender of voting users.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
@@ -222,6 +247,20 @@ movies &lt;- read_file(&quot;datasets/movielens/movies.dat&quot;) %&gt;%
     spread(gender, mean_rating, fill = 0) %&gt;% 
     select(-`&lt;NA&gt;`)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChtZWFuX3JhdGluZ3MpXG5gYGAifQ== -->
+<pre class="r"><code>head(mean_ratings)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImdyb3VwZWRfZGYiLCJ0YmxfZGYiLCJ0YmwiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjMsIm5yb3ciOjZ9LCJyZGYiOiJINHNJQUFBQUFBQUFBMTFSelVyRFFCRGVOazFxVTl1S2lpZ29yaURVUWhzU2tmN2N0bEE4Q1BVZ0JkdGptc1kyTkNZMTJhQVhRU2pVMS9Ea0EvZ1M5cXpnVFMvZXZIcnowTGliWm90bW1OMmRuZStiMloyWnMwYjdVR3lMQUlBNDRQZ1lpSFBFVE1USkZnTUprS0xuRFFEY0dqRW9za0tXRUFJN2tpVFZyUjQ4OFZ4c2FEcThzQjFZTjAxNG9OUXF0VUpJV3MxM1BhZnJGbUZyb0ZPa3VrRFc4NmRHZjRCaDA4WUQzUW13TXNPMjhpM0RwQ0dPRHM5VkYzWnNqeEpxRlViWTJGZUtzaXpUQlJ1ZU5nd2VWUmk2ckpScUJLQVJSd1Z5ejlKZm8rekRGOUVjRWpycHZWNXhndExiVjg5RUVkK2ZQbWJlYmxFYUJJTEFRdVp4bWZGdVZma2VvK1JUWnlyZmZ5THhoY29yNHQrcGZDQmhVNTBRUlVzczdGLzdlTTFVWFRkc0hYT0tQUldyMG9Xalh1cFJ1a1Y4ak00eEp6YXdxYk41SERPakdZbE5PZmExeE9JemRLUjNaUE45LzRjY3N3ZzVhWSt3WVZ1RUdxZkQ1U00vakRrUlI4NnphT3BlU1J0NDFyQlVwbFVFOEZ3eW9TMzhzYm41azV3ZnB1TERWSUp1OVEyTDFjT2JhbGMzdzB1V2xCQlVJSTBjdzhLc1hjVHJTdGpHS3VPSm1tMHlUMUFibVAwQ0tjRm03OG9DQUFBPSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["title"],"name":[1],"type":["chr"],"align":["left"]},{"label":["F"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["M"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"...And Justice for All (1979)","2":"3.828571","3":"3.689024"},{"1":"'burbs, The (1989)","2":"2.793478","3":"2.962085"},{"1":"'Night Mother (1986)","2":"3.388889","3":"3.352941"},{"1":"'Til There Was You (1997)","2":"2.675676","3":"2.733333"},{"1":"$1,000,000 Duck (1971)","2":"3.375000","3":"2.761905"},{"1":"1-900 (1994)","2":"2.000000","3":"3.000000"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>We may want to filter this dataframe to keep only movies that were rated by at least 250 users. So let’s get the total number of users that rated each movie.</p>
@@ -236,10 +275,38 @@ movies &lt;- read_file(&quot;datasets/movielens/movies.dat&quot;) %&gt;%
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChyYXRpbmdzX2J5X3RpdGxlKVxuYGBgIn0= -->
+<pre class="r"><code>head(ratings_by_title)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6Nn0sInJkZiI6Ikg0c0lBQUFBQUFBQUExMVJRVXZETUJUTzJuV3k0bFJVQkE5Q0Rzb2NiTFdWNGRiallIZ1E5Q0FENTBtNkxsdkRZaktTVkQzNjcveFBIbGFUTGhGdDRlVWwzL2U5MS9jbGorUHB0VC8xQVFBT2NMMGFjRnkxclR0cXFZRTZhT3I4QVlCN1ZBb0FPRkRSTU1SWkVBUWpPb2QzdVpBNFJYREJPQndSQWkramVCQjNqT2l3UGN2NVRIVGhKRU9hR2Y0eXgrMEh2TXdrdkdjeVE3emtiaXgzMnA1Z29rczRnaytKZ004czE0SjRZQVVuNTFFM0RFTWRjSnlucS9LbmtXVjNvMTZzQ0YzUjc2aHpxNXdhZ0MvbDVrcmxXeFY5RlJkYlYvL3NlaWxKaERCV0xlalBFNWtFQzU2OG9xcWNLc3pLSFF0S0xBbXl3N3d4aWVueUpSZUlpMHAxazdQM3dIYlFVenFmYWltSzRsdWxUVVc4dzlZU002cWtqbjRPcnpKampWZUEvWnpxMXZOZW11VjAxUnRxSHlXOS9WcG0zL2l6TjVmaEZxYVZaMW8xRUYxaWFoMTVKSmtoWWc1N3lrTHBJRmh6VEtXOU1JV0tRREtaV0oyZk1tS1IwaHZZL0FDYVcwU09mQUlBQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["title"],"name":[1],"type":["chr"],"align":["left"]},{"label":["voting_users"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"...And Justice for All (1979)","2":"199"},{"1":"'burbs, The (1989)","2":"303"},{"1":"'Night Mother (1986)","2":"70"},{"1":"'Til There Was You (1997)","2":"52"},{"1":"$1,000,000 Duck (1971)","2":"37"},{"1":"1-900 (1994)","2":"2"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWN0aXZlX3RpdGxlcyA8LSByYXRpbmdzX2J5X3RpdGxlICU+JSBcbiAgICBmaWx0ZXIodm90aW5nX3VzZXJzID49IDI1MClcbmBgYCJ9 -->
 <pre class="r"><code>active_titles &lt;- ratings_by_title %&gt;% 
     filter(voting_users &gt;= 250)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChhY3RpdmVfdGl0bGVzKVxuYGBgIn0= -->
+<pre class="r"><code>head(active_titles)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6Nn0sInJkZiI6Ikg0c0lBQUFBQUFBQUEzMVJQVS9ETUJCMWtxYW9FVVVWRlJLam1RQ0pocnFvaFl5Vk9zREFncEFvRTNKYTAwU2tkbVU3Zkd6OE1INFRQNENoNFp6R0ZjcEFwUE9kMzNzNTM3UHZKdE5CTUEwUVFpN3lmQWU1SHBRTkZ4WUhOVkRMNUhlRXZHNHBRS2dEMGF5SS9lTTRsN0U2dy9jSnd5Y2t1b3BPSythSTlBRk0rVUxoRzN4Tk5jUGpXT1FhUDRyY0NLT3Q4SUQwQ1o3UWJFbDFTcmt5NUlqOFEwWWpTM2JKQUkvNVFuN2dXOFlOTmJ5MDFDRzUwQWwrb0ZLbVFtNm5NNGNpMUM3blI4NDUyUG1DR0VLZFFVNGd2bXZHL1ZsR2xhcE1XekNZVTAzRFowbVhyQzduZ0ZtNWEwR2Q2b3hWbTkxWG9lRlNubkxGcEtyOTNaTGlMYlFkekpUdUp5eEZVZnhBV3RmRU8yS2xVOEZCNnBxSDhXc3pPcklHZEhKdVdzOTdzeVRuTHozU04wWktmdk8xcTdyNXAzWTNaM3BGMWN1dmVqVVpYNlRjV3ZJekdyT3MydXlCaDlKQ3VKSXAxL2JHQUZXaEZwcGFYVEFUbVVWS2MyajlDM0NJdzlDSEFnQUEifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["title"],"name":[1],"type":["chr"],"align":["left"]},{"label":["voting_users"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"'burbs, The (1989)","2":"303"},{"1":"10 Things I Hate About You (1999)","2":"700"},{"1":"101 Dalmatians (1961)","2":"565"},{"1":"101 Dalmatians (1996)","2":"364"},{"1":"12 Angry Men (1957)","2":"616"},{"1":"13th Warrior, The (1999)","2":"750"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Now we can get the mean rating for this new subset of movies.</p>
@@ -254,20 +321,46 @@ movies &lt;- read_file(&quot;datasets/movielens/movies.dat&quot;) %&gt;%
 <p>Let’s view the top rated movies across men and women voters.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG9wX21hbGVfcmF0aW5ncyA8LSBhY3RpdmVfbWVhbl9yYXRpbmdzICU+JSBcbiAgICBhcnJhbmdlKGRlc2MoTSkpICU+JSBcbiAgICBzZWxlY3QodGl0bGUsIE0pXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG9wX21hbGVfcmF0aW5ncyA8LSBhY3RpdmVfbWVhbl9yYXRpbmdzICU+JSBcbiAgICBhcnJhbmdlKGRlc2MoTSkpIFxuYGBgIn0= -->
 <pre class="r"><code>top_male_ratings &lt;- active_mean_ratings %&gt;% 
-    arrange(desc(M)) %&gt;% 
-    select(title, M)</code></pre>
+    arrange(desc(M)) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG9wX2ZlbWFsZV9yYXRpbmdzIDwtIGFjdGl2ZV9tZWFuX3JhdGluZ3MgJT4lIFxuICAgIGFycmFuZ2UoZGVzYyhGKSkgJT4lIFxuICAgIHNlbGVjdCh0aXRsZSwgRilcbmBgYCJ9 -->
-<pre class="r"><code>top_female_ratings &lt;- active_mean_ratings %&gt;% 
-    arrange(desc(F)) %&gt;% 
-    select(title, F)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG9wX21hbGVfcmF0aW5nc1sxOjEwLCBdXG5gYGAifQ== -->
+<pre class="r"><code>top_male_ratings[1:10, ]</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImdyb3VwZWRfZGYiLCJ0YmxfZGYiLCJ0YmwiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjMsIm5yb3ciOjEwfSwicmRmIjoiSDRzSUFBQUFBQUFBQTExVFRVd1RRUlNlZGxrTlRVQjJsWkJ3MEVtVTJDTFVGSzBWRGpnSWlrYmcwQzFDakpleE8yVlhscGxtWjB1TmVDRHg0RjI4ZWRTUVlLTEVreWZqall0eTB6TWFOUWJqd1lOL2lZWTZzOTBwMmtsMjV1MTczL3ZlKzJiZjVzZG1CeEt6Q1FCQUhHaDZETVExWWJiRXhSWURMYUJWbmpjQTBQWUxRMFk2eEpPSUFwM2p6Qzdod0NGK0h5dzRCQ1l6ZzdtQlZCUWN0Y2dpb2REQ0N4VWZ1ekFwQVpONGpyb2x0MGhvQU1Od0NpWXR4eTA2TG5VcHBBenlPam9scWJJbkZSVzBIRnpsRHFiek1FOXNzbEFPWEVZYkpRY2J1SU41N05yRTU1Q1ZvT2dLVGpBZXdCRi9YcUpPWnhTcWU1cFhzQWV0Q2krVFlzQjNlYklLa2JJQzdNTVo3UE1oZUs3c2NtWVRlUEV5N0ljamNJcFU0UVZXcm12TnFZUXVTMHF3UGVJZjVYRENGVlVsMzRsR3hSbWYwVGxZOEZtRmkvWjJLellRbmFNZTQwVHFYQ1I5b3N4LzdaaDVJdHNSQlZoVlhRd0E3ZkpESU9Nc1dydC82U1V5dmp4KzMvTDZEaktUMnRqeHErdklLQnplM05wNGhzeTJCL3E5bmd3eVRtWDFJNitPSVJOMVA0dzlRc2k4RWk1a3Jtd1ByMnlmUWNiWDNxRjliellhdk9aMHVKQTVWVjFidjl1RHpPRUROOStOUDBGbVo5ZmlwNlZEeURUWFY2ZVdDc2o0bmRtMHdGdGsvTXd1LzhsK1I4YjI4OXpxdHkxa2ZPd2x2MjdkUnNhSG1hY3ZQbDl2bWlpOTZHSE9vMmxTem9TTkE1d3UrWGlCTk1PcDhDbTRwcHlCRzNoRWplaDVaVXcyNWJiNnJKcFcrVzF5eXBmRlZxdlZmb2hqcHdtOGw0V2pKYUJ4T2U5NlU0Y3h2OG5SVWFHUzJ1NHZPaFU2MzUvSmhUK0hqTmRYVzJRbi9yRzFlazJ0Rm5IcEVkY2VRdWRjcWdUcEhyNUd2T2lsWFdnSUphVEx2a3NEZFYvQ3k5TUJDN0RDSllyTVU1NVFITmo1Q3gwRmxvL2VBd0FBIn0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["title"],"name":[1],"type":["chr"],"align":["left"]},{"label":["F"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["M"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Godfather, The (1972)","2":"4.314700","3":"4.583333"},{"1":"Seven Samurai (The Magnificent Seven) (Shichinin no samurai) (1954)","2":"4.481132","3":"4.576628"},{"1":"Shawshank Redemption, The (1994)","2":"4.539075","3":"4.560625"},{"1":"Raiders of the Lost Ark (1981)","2":"4.332168","3":"4.520597"},{"1":"Usual Suspects, The (1995)","2":"4.513317","3":"4.518248"},{"1":"Star Wars: Episode IV - A New Hope (1977)","2":"4.302937","3":"4.495307"},{"1":"Schindler's List (1993)","2":"4.562602","3":"4.491415"},{"1":"Wrong Trousers, The (1993)","2":"4.588235","3":"4.478261"},{"1":"Close Shave, A (1995)","2":"4.644444","3":"4.473795"},{"1":"Rear Window (1954)","2":"4.484536","3":"4.472991"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG9wX2ZlbWFsZV9yYXRpbmdzIDwtIGFjdGl2ZV9tZWFuX3JhdGluZ3MgJT4lIFxuICAgIGFycmFuZ2UoZGVzYyhGKSkgXG5gYGAifQ== -->
+<pre class="r"><code>top_female_ratings &lt;- active_mean_ratings %&gt;% 
+    arrange(desc(F)) </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG9wX2ZlbWFsZV9yYXRpbmdzWzE6MTAsIF1cbmBgYCJ9 -->
+<pre class="r"><code>top_female_ratings[1:10, ]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImdyb3VwZWRfZGYiLCJ0YmxfZGYiLCJ0YmwiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjMsIm5yb3ciOjEwfSwicmRmIjoiSDRzSUFBQUFBQUFBQTExVFMyZ1VNUmllM2VrcVhXanRqRStLaDF6Nmt1MW9xN3UySG1yNndBVnJGZHVWRnZHU3pxVGRZYlBKa21SYW4xRHdwS0tYZWxNUVVYcndZTkY3OGFBSHhZTkhEeGJFRjlLcitEcEkxOHgwc3RZTk04ay8vLzk5WC9MLytXZDhaS28zUFpVMkRDTnBtS21Fa1RTVjJaQlVVOEpvTUJyRDlieGhtTnVWRVVaYTFKdU9BenVIQ1JNWVRCVFJITTZBUWREWjA5K2Y3WXFEclpPYzBWbFE0Q3dRbUlzTUtCUnhoRGlvRWQwVEFSVllnaUV5NXptZ0V6a2xCemxBTzFsQThCemlYbGRJeWg3UXBOd2tJZ1M1R0xTRFBHZGxYeDZKaElld2tJRE5nRUhGS0NNS0JxbGZSdEpuTk5veXA5bTdKOXlpVHoyQ2VZY0FKM3pGK2U5RVlTcnpvb2hvQ1l4akQ1Y3JvY0sva3grcXllUTVvaDRZUVJmQXFVRHExSHQxZUcrQmdWR2ZFSURBR0hOTFBwMmQ5cmtYWW5JMXpKNWhqcEVNT0FiRHJEekR1QlNSUmkzUDFqTWlRRVJWUTFTd0t6ZVZUeFhZTUpyRFc0RDI0dHJBNHRwUmFKK05CclNQZTB2cWdUYThaK0d2YldwdGZaaDRCS0hkYVk3c1A3Y003ZlpYVDhtZERtaTMzZmcyOWF3ZDJzMTluMjcxZllaMjA0UFU3YmFlbXE3MVpSLytmZmtxdE5aV0RpOTlmdyt0ZHl2NTF5OC9RdXY2YWVQNS9RRm8vY291L01uK2dQYkFqb3NmOG8raGxSbTFYenpKUU92S3pWVnc5eHEwZHIxNXk3ZGxvVzB2TDUyOFZLaHJwNVJMa0JCeEsybG4ya01TT1RNY2xYRTluQ3FmaHB2YUtYMUpzTzdQWTlvWXErTTJjamJ2YUg1VDJPSUxhcXBXcXovVnNsNEgzc3FpNjFiUVpOanNxYm9USm5pZG95V2dvYlRYN1JZRFd1cnU2WXYrakRDK01acGlPNzNKTmpmMk5LdXhWaXJXMm9McHJFOTFRaW1DcGpHSlA1cFZEbEVLVG9YN1ZPcDZLYTl3SkpOSTQ5SXVJOW9USldlcy93V0R4OFdFMndNQUFBPT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["title"],"name":[1],"type":["chr"],"align":["left"]},{"label":["F"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["M"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Close Shave, A (1995)","2":"4.644444","3":"4.473795"},{"1":"Wrong Trousers, The (1993)","2":"4.588235","3":"4.478261"},{"1":"Sunset Blvd. (a.k.a. Sunset Boulevard) (1950)","2":"4.572650","3":"4.464589"},{"1":"Wallace & Gromit: The Best of Aardman Animation (1996)","2":"4.563107","3":"4.385075"},{"1":"Schindler's List (1993)","2":"4.562602","3":"4.491415"},{"1":"Shawshank Redemption, The (1994)","2":"4.539075","3":"4.560625"},{"1":"Grand Day Out, A (1992)","2":"4.537879","3":"4.293255"},{"1":"To Kill a Mockingbird (1962)","2":"4.536667","3":"4.372611"},{"1":"Creature Comforts (1990)","2":"4.513889","3":"4.272277"},{"1":"Usual Suspects, The (1995)","2":"4.513317","3":"4.518248"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -285,12 +378,46 @@ movies &lt;- read_file(&quot;datasets/movielens/movies.dat&quot;) %&gt;%
 <p>Sorting the dataset by this new column in ascending order will return movies that were rated higher by women, while sorting in descending order will return movies rated higher by men.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlnaF9yYXRpbmdzX21hbGUgPC0gYWN0aXZlX21lYW5fcmF0aW5ncyAlPiUgXG4gICAgYXJyYW5nZShkZXNjKG1lYW5fZGlmZikpXG5oaWdoX3JhdGluZ3NfZmVtYWxlIDwtIGFjdGl2ZV9tZWFuX3JhdGluZ3MgJT4lIFxuICAgIGFycmFuZ2UobWVhbl9kaWZmKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlnaF9yYXRpbmdzX21hbGUgPC0gYWN0aXZlX21lYW5fcmF0aW5ncyAlPiUgXG4gICAgYXJyYW5nZShkZXNjKG1lYW5fZGlmZikpXG5gYGAifQ== -->
 <pre class="r"><code>high_ratings_male &lt;- active_mean_ratings %&gt;% 
-    arrange(desc(mean_diff))
-high_ratings_female &lt;- active_mean_ratings %&gt;% 
+    arrange(desc(mean_diff))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChoaWdoX3JhdGluZ3NfbWFsZSlcbmBgYCJ9 -->
+<pre class="r"><code>head(high_ratings_male)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImdyb3VwZWRfZGYiLCJ0YmxfZGYiLCJ0YmwiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjQsIm5yb3ciOjZ9LCJyZGYiOiJINHNJQUFBQUFBQUFBd3R5aVREaWl1QmlZR0JnWW1CbVpXUmdZZ1l5V1ppQUJDTURDd01uaUs1Z1lHQVdCb2tDc1FBUXMwRWwxTnp6ODFOMEZFSXlVaFdjRWxNVUV2TlN3T3pROUp4S2lLaUdvYVdabVNaVXRZSjNhbDVKYVhKMnBZSmJVV1pxaW9KdmZsbG1LbHlkdVRsTW5ZaExhVzZTZ3BvQ2lFb3RBc2xabXNEa3hIM3k4OUpUaTBzVVhCS1JyRENDU1lzNkp5YmxwQ3E0bHlJa0xlSDJLN21XWmVZb3VLUUNYZXJwcWFBQlpqaFZBazBxejlNRXFiUUF1b0NCZ1Eva1B3ZnVyeXRFMWw5YjRNRE9mdkJEalR5SEErdlV5ajhUZ2lvY3VMM0J3QUVVUEVEZ3dKVndOLzNFTWo2NFBvRkhjeG9leldsMDRDbjRBQVFmSGJnMlJxd0oweFp6RUZBd2JsMDA5NlFEMjB2T2FJYWJ1eHo0M2N5WU5Ma2Z3ZlRaUDdkejNoTGEyV0gvZE1rZXhzdnVTK3lmNUZmdEYwK3FzSDk4SmUvLzg0TXk5bytYcU9Zd3A3MndmencxS2JOeGVnQmFCTEVtNXlRV0YwTWpCeWJJbFpKWWtxaVhWcFNZbTRxdVBBOG9CbFBPQWhNc3lTekpTWVhGdUJ1TTRRdGxjT2FtSnViRnAyU21wYUVaeGxtVVg2NEhNNUFYbElvYWdNVC8vLzkvQWFsL2FJclo4d3RLTXZQemdFcVpRT21KRmMzSmpFVm9BZ0tsZVNDalUzU1RNMHJ6c25XTkRFSCtBc3REQUMrVXpZYkVab0hZeWZ3ZmFoWXIxQ3kyMUx6MHpEeVlEMWx6RXBOU2M2QWNQcUFmd0Y3UUt5akt6Q3VCQlNCUXRGaXZKTDhrRWFhT0t6ay9CeVlDOWh6RFB3QmtmcGtTUGdNQUFBPT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["title"],"name":[1],"type":["chr"],"align":["left"]},{"label":["F"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["M"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["mean_diff"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"Good, The Bad and The Ugly, The (1966)","2":"3.494949","3":"4.221300","4":"0.7263506"},{"1":"Kentucky Fried Movie, The (1977)","2":"2.878788","3":"3.555147","4":"0.6763592"},{"1":"Dumb & Dumber (1994)","2":"2.697987","3":"3.336595","4":"0.6386083"},{"1":"Longest Day, The (1962)","2":"3.411765","3":"4.031447","4":"0.6196818"},{"1":"Cable Guy, The (1996)","2":"2.250000","3":"2.863787","4":"0.6137874"},{"1":"Evil Dead II (Dead By Dawn) (1987)","2":"3.297297","3":"3.909283","4":"0.6119854"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlnaF9yYXRpbmdzX2ZlbWFsZSA8LSBhY3RpdmVfbWVhbl9yYXRpbmdzICU+JSBcbiAgICBhcnJhbmdlKG1lYW5fZGlmZilcbmBgYCJ9 -->
+<pre class="r"><code>high_ratings_female &lt;- active_mean_ratings %&gt;% 
     arrange(mean_diff)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChoaWdoX3JhdGluZ3NfZmVtYWxlKVxuYGBgIn0= -->
+<pre class="r"><code>head(high_ratings_female)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImdyb3VwZWRfZGYiLCJ0YmxfZGYiLCJ0YmwiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjQsIm5yb3ciOjZ9LCJyZGYiOiJINHNJQUFBQUFBQUFBd3R5aVREaWl1QmlZR0JnWW1CbVpXUmdZZ1l5V1ppQUJDTURDd01uaUs1Z1lHQVdCb2tDc1FBUXMwRWxSRnd5aTBvcUZWd1M4NUl6ODlJVk5Bd3RMY3cxb1hLU1hxVzVCWmw1NmdwZWljblpDbTQ1aWNVWllBVm1NQVc4N2tXcGljV3BJRUZ6QzVpZ3NFOW1TVWxPcWtKNGZtNXFIa2pLMGdRbUpSWmNrcHFhbytDYm1KNlhuNU9aV0F3MnpSSW1LK0NZbDFoY2tsaWNtUWpXQlhRR0F3TWZ5S2tPZkVFYnQ0VC8rT2JBeGJtU3IzYnFIZ2YrcytINzdyVnZjT0Q3QmdMZkhmak5Ec1J0NlZCeDRFc0RBN2crOXJVT1MrdTJNanV3TEtoeU9iYitzQVBYKzgzZSs4N3FPM0JOZXYxZG9tYWxBOWZiYWtrK3pWUUhMb2M5UVNuY1IySDY5cithZXNRNmxmL00vcWRMZHF2ZG52NWsvK095aVdmcVhySHNmemhCKzMvbFM0djlEMVZGeFdaVy9kbi9ZTnFLQU02c0ZyU3daazBHaGxReE5KeGhnbHdwaVNXSmVtbEZpYm1wNk1yemdHSXc1U3d3d1pKTVlCakNJczhOeHZDRk1qaHpVeFB6NGxNeVFYNUZNWXl6S0w5Y0QyWWdMeWhCTkFDSi8vLy8vd0pTLzlBVXMrY1hsR1RtNXdHVk1vR1NCaXVha3htTDBBUUVTdk5BUnFmb0ptZVU1bVhyR2htRC9BV1dod0JlS0pzTmljMENzWlA1UDlRc1ZxaFpiS2w1NlpsNU1CK3k1aVFtcGVaQU9YeEFQNEM5b0ZkUWxKbFhBZ3RBb0dpeFhrbCtTU0pNSFZkeWZnNU1CT3c1aG44QXJ5SGRoZ2tEQUFBPSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["title"],"name":[1],"type":["chr"],"align":["left"]},{"label":["F"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["M"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["mean_diff"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"Dirty Dancing (1987)","2":"3.790378","3":"2.959596","4":"-0.8307820"},{"1":"Jumpin' Jack Flash (1986)","2":"3.254717","3":"2.578358","4":"-0.6763588"},{"1":"Grease (1978)","2":"3.975265","3":"3.367041","4":"-0.6082238"},{"1":"Little Women (1994)","2":"3.870588","3":"3.321739","4":"-0.5488491"},{"1":"Steel Magnolias (1989)","2":"3.901734","3":"3.365957","4":"-0.5357767"},{"1":"Anastasia (1997)","2":"3.800000","3":"3.281609","4":"-0.5183908"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Movies that elicited the most disagreement among all viewers (both male and female) can be found by exploiting the standard deviation of ratings.</p>
@@ -314,9 +441,60 @@ high_ratings_female &lt;- active_mean_ratings %&gt;%
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmF0aW5nX3N0ZF9ieV90aXRsZVsxOjEwLCBdXG5gYGAifQ== -->
+<pre class="r"><code>rating_std_by_title[1:10, ]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6MTB9LCJyZGYiOiJINHNJQUFBQUFBQUFBMTFTejJzVU1SVE96blFxTzloMXdSWVBIc3pCWHhVN1lMRzFld29zclZiY1NxbUwxcHZwVExxVDNUUlpNeG5yM2p4NEVQOEJQWGpXa3lpSWdsZEIvd0VGd1lzOUN5SmxwM3JiTlRNN0tlME1UTjdMOTc3MzN2ZVNyQzJ1ejdyckxnREFBclpUQXBhdDNURkxMeVV3QnNxcGZRaUFmVHdqQUZEVnY1c0hKaGZqclExNEZxYUdTSGorVXExMmVUcVBuYW96VENXOFE1VWZ3bFVwMnNSWEYyRXpKQm10Wm1nbmIySVZTOHhnWFVnT2IxREdpSXdPVjZvMk1lL0FhMVN5REo4eitKazE0WGQ2Y0ZsSUtTUmNwYjR1Uk9DdFVHenY5N215VDU1YTZwRklxd2xTUnF3T2l6aTY5SUFxbkdIekJwdXNheTA5dUlJREdnbGU2SHlWWUFreEQyQkRZQlZTM29LVXd3YU80RzNTd2lQNUM0WjhvazU5d2hYaG5Pb3hWekEzdlFHb3BHZUo5azU3Qzd1TmIyanYyUGRuVDl2M1VQSnJ1ZnoyVTRpUys5MlB6YThLSmROdlh2MzR2SU9TYyszQnY3c3ZVVkw1MmJWZXYwRDk0Yzc3TDV0UFVILzMrbk41NFEvcS8zNzNlTHozb1hCNWpzOXdGT1VYWjBBM3dBcDdteEp2a1NLZGE4elFMUU1xcWhqSk4zYWtna0pTV1lwdHp5Uk9wSW1QOURJY0R2OXFNeWlRajRpdW9vSnJxcFcrS2FjZ3JTUUxRRFhtYWVsZ3hnOWozcG1abmM4ZVlCb2ZmUk81N3g3d3JWRlBlNWpYY3ZKYTQ0UzNLRGVUT0F4dkVKWnZLbnFHYkFTdkt5bFg1cUEwR25sS0tHeDRyaStZUWJMaHdPQS9vSVluT1VJREFBQT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["title"],"name":[1],"type":["chr"],"align":["left"]},{"label":["std"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Dumb & Dumber (1994)","2":"1.321333"},{"1":"Blair Witch Project, The (1999)","2":"1.316368"},{"1":"Natural Born Killers (1994)","2":"1.307198"},{"1":"Tank Girl (1995)","2":"1.277695"},{"1":"Rocky Horror Picture Show, The (1975)","2":"1.260177"},{"1":"Eyes Wide Shut (1999)","2":"1.259624"},{"1":"Evita (1996)","2":"1.253631"},{"1":"Billy Madison (1995)","2":"1.249970"},{"1":"Fear and Loathing in Las Vegas (1998)","2":"1.246408"},{"1":"Bicentennial Man (1999)","2":"1.245533"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<hr />
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<pre class="r"><code>sessionInfo()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNS4xICgyMDE4LTA3LTAyKVxuUGxhdGZvcm06IHg4Nl82NC1hcHBsZS1kYXJ3aW4xNS42LjAgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IG1hY09TIEhpZ2ggU2llcnJhIDEwLjEzLjZcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTOiAvU3lzdGVtL0xpYnJhcnkvRnJhbWV3b3Jrcy9BY2NlbGVyYXRlLmZyYW1ld29yay9WZXJzaW9ucy9BL0ZyYW1ld29ya3MvdmVjTGliLmZyYW1ld29yay9WZXJzaW9ucy9BL2xpYkJMQVMuZHlsaWJcbkxBUEFDSzogL0xpYnJhcnkvRnJhbWV3b3Jrcy9SLmZyYW1ld29yay9WZXJzaW9ucy8zLjUvUmVzb3VyY2VzL2xpYi9saWJSbGFwYWNrLmR5bGliXG5cbmxvY2FsZTpcblsxXSBlbl9HQi5VVEYtOC9lbl9HQi5VVEYtOC9lbl9HQi5VVEYtOC9DL2VuX0dCLlVURi04L2VuX0dCLlVURi04XG5cbmF0dGFjaGVkIGJhc2UgcGFja2FnZXM6XG5bMV0gc3RhdHMgICAgIGdyYXBoaWNzICBnckRldmljZXMgdXRpbHMgICAgIGRhdGFzZXRzICBtZXRob2RzICAgYmFzZSAgICAgXG5cbm90aGVyIGF0dGFjaGVkIHBhY2thZ2VzOlxuIFsxXSBiaW5kcmNwcF8wLjIuMiAgbWFncml0dHJfMS41ICAgIGpzb25saXRlXzEuNSAgICBmb3JjYXRzXzAuMy4wICAgc3RyaW5ncl8xLjMuMSAgIGRwbHlyXzAuNy42ICAgIFxuIFs3XSBwdXJycl8wLjIuNSAgICAgcmVhZHJfMS4xLjEgICAgIHRpZHlyXzAuOC4xICAgICB0aWJibGVfMS40LjIgICAgZ2dwbG90Ml8zLjAuMCAgIHRpZHl2ZXJzZV8xLjIuMVxuXG5sb2FkZWQgdmlhIGEgbmFtZXNwYWNlIChhbmQgbm90IGF0dGFjaGVkKTpcbiBbMV0gUmNwcF8wLjEyLjE4ICAgICBjZWxscmFuZ2VyXzEuMS4wIHBseXJfMS44LjQgICAgICAgcGlsbGFyXzEuMy4wICAgICBjb21waWxlcl8zLjUuMSAgIGJpbmRyXzAuMS4xICAgICBcbiBbN10gYmFzZTY0ZW5jXzAuMS0zICB0b29sc18zLjUuMSAgICAgIGRpZ2VzdF8wLjYuMTUgICAgbHVicmlkYXRlXzEuNy40ICBldmFsdWF0ZV8wLjExICAgIG5sbWVfMy4xLTEzNyAgICBcblsxM10gZ3RhYmxlXzAuMi4wICAgICBsYXR0aWNlXzAuMjAtMzUgIHBrZ2NvbmZpZ18yLjAuMSAgcmxhbmdfMC4yLjEgICAgICBjbGlfMS4wLjAgICAgICAgIHJzdHVkaW9hcGlfMC43ICBcblsxOV0geWFtbF8yLjIuMCAgICAgICBoYXZlbl8xLjEuMiAgICAgIHdpdGhyXzIuMS4yICAgICAgeG1sMl8xLjIuMCAgICAgICBodHRyXzEuMy4xICAgICAgIGtuaXRyXzEuMjAgICAgICBcblsyNV0gc3BBZGRpbnNfMC4yLjAgICBobXNfMC40LjIgICAgICAgIHJwcm9qcm9vdF8xLjMtMiAgZ3JpZF8zLjUuMSAgICAgICB0aWR5c2VsZWN0XzAuMi40IGdsdWVfMS4zLjAgICAgICBcblszMV0gUjZfMi4yLjIgICAgICAgICBmYW5zaV8wLjMuMCAgICAgIHJlYWR4bF8xLjEuMCAgICAgcm1hcmtkb3duXzEuMTAgICBtb2RlbHJfMC4xLjIgICAgIGJhY2twb3J0c18xLjEuMiBcblszN10gc2NhbGVzXzEuMC4wICAgICBodG1sdG9vbHNfMC4zLjYgIHJ2ZXN0XzAuMy4yICAgICAgYXNzZXJ0dGhhdF8wLjIuMCBjb2xvcnNwYWNlXzEuMy0yIGxhYmVsaW5nXzAuMyAgICBcbls0M10gdXRmOF8xLjEuNCAgICAgICBzdHJpbmdpXzEuMi40ICAgIGxhenlldmFsXzAuMi4xICAgbXVuc2VsbF8wLjUuMCAgICBicm9vbV8wLjUuMCAgICAgIGNyYXlvbl8xLjMuNCAgICBcbiJ9 -->
+<pre><code>R version 3.5.1 (2018-07-02)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS High Sierra 10.13.6
+
+Matrix products: default
+BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] bindrcpp_0.2.2  magrittr_1.5    jsonlite_1.5    forcats_0.3.0   stringr_1.3.1   dplyr_0.7.6    
+ [7] purrr_0.2.5     readr_1.1.1     tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.18     cellranger_1.1.0 plyr_1.8.4       pillar_1.3.0     compiler_3.5.1   bindr_0.1.1     
+ [7] base64enc_0.1-3  tools_3.5.1      digest_0.6.15    lubridate_1.7.4  evaluate_0.11    nlme_3.1-137    
+[13] gtable_0.2.0     lattice_0.20-35  pkgconfig_2.0.1  rlang_0.2.1      cli_1.0.0        rstudioapi_0.7  
+[19] yaml_2.2.0       haven_1.1.2      withr_2.1.2      xml2_1.2.0       httr_1.3.1       knitr_1.20      
+[25] spAddins_0.2.0   hms_0.4.2        rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.4 glue_1.3.0      
+[31] R6_2.2.2         fansi_0.3.0      readxl_1.1.0     rmarkdown_1.10   modelr_0.1.2     backports_1.1.2 
+[37] scales_1.0.0     htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0 colorspace_1.3-2 labeling_0.3    
+[43] utf8_1.1.4       stringi_1.2.4    lazyeval_0.2.1   munsell_0.5.0    broom_0.5.0      crayon_1.3.4    </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiTW92aWVMZW5zIDFNIERhdGFzZXQiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCmBgYHtyfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgojIyBMb2FkaW5nIHRoZSBkYXRhICAKClRoaXMgZGF0YXNldCBpcyBzcGxpdCBvdmVyIDMgZmlsZXMsIGNvbnRhaW5pbmcgZGlmZmVyZW50IGluZm9ybWF0aW9uLiBUaGUgYG1vdmllc2AgZGF0YXNldCBjb250YWlucyBtb3ZpZXMgaW5mb3JtYXRpb24sIHRoZSBgdXNlcnNgIGRhdGFzZXQgY29udGFpbnMgdm90aW5nIHVzZXJzIGluZm9ybWF0aW9uIGFuZCB0aGUgYHJhdGluZ3NgIGRhdGFzZXQgY29udGFpbnMgbW92aWUgcmF0aW5ncy4gIApUbyBteSBrbm93bGVkZ2UsIG5vIGBSYCBwYWNrYWdlIGlzIGNhcGFibGUgb2YgcmVhZGluZyBhIGZpbGUgd2l0aCBkb3VibGUgY2hhcmFjdGVycyBhcyBjb2x1bW4gZGVsaW1pdGVyLCBhcyBpcyBpbiB0aGlzIGNhc2UsIHdoZXJlIGVhY2ggY29sdW1uIGluIHRoZSBmaWxlcyBpcyBkZWxpbWl0ZWQgdXNpbmcgYDo6YC4gRm9yIHRoaXMgcmVhc29uLCB3ZSBhcmUgZmlyc3QgZ29pbmcgdG8gcmVhZCBpbiB0aGUgZW50aXJlIHJhdyBmaWxlcywgcmVwbGFjZSBvY2N1cnJlbmNlcyBvZiBgOjpgIHdpdGggYF9gLCBhbmQgdGhlbiBwYXJzZSB0aGUgZGF0YXNldHMgdXNpbmcgYSBjbGFzc2ljIGByZWFkX2RlbGltYC4gQW55IG90aGVyIGRlbGltaXRlciBjYW4gYmUgdXNlZCBpbnN0ZWFkIG9mIGBfYCwgYXMgbG9uZyBhcyBpdCBpcyBub3QgYWxyZWFkeSBwcmVzZW50IGluIHRoZSBmaWxlIChvdGhlcndpc2UgeW91IHdpbGwgaGF2ZSBpc3N1ZXMgd2hlbiB0cnlpbmcgdG8gbG9hZCB0aGUgZGF0YSkuICAKCmBgYHtyfQp1c2VycyA8LSByZWFkX2ZpbGUoImRhdGFzZXRzL21vdmllbGVucy91c2Vycy5kYXQiKSAlPiUgCiAgICBzdHJfcmVwbGFjZV9hbGwoIjo6IiwgIl8iKSAlPiUgCiAgICByZWFkX2RlbGltKGRlbGltID0gIl8iLCBjb2xfbmFtZXMgPSBjKCJ1c2VyX2lkIiwgImdlbmRlciIsICJhZ2UiLCAib2NjdXBhdGlvbiIsICJ6aXAiKSkKCnJhdGluZ3MgPC0gcmVhZF9maWxlKCJkYXRhc2V0cy9tb3ZpZWxlbnMvcmF0aW5ncy5kYXQiKSAlPiUgCiAgICBzdHJfcmVwbGFjZV9hbGwoIjo6IiwgIl8iKSAlPiUgCiAgICByZWFkX2RlbGltKGRlbGltID0gIl8iLCBjb2xfbmFtZXMgPSBjKCJ1c2VyX2lkIiwgIm1vdmllX2lkIiwgInJhdGluZyIsICJ0aW1lc3RhbXAiKSkKCm1vdmllcyA8LSByZWFkX2ZpbGUoImRhdGFzZXRzL21vdmllbGVucy9tb3ZpZXMuZGF0IikgJT4lIAogICAgc3RyX3JlcGxhY2VfYWxsKCI6OiIsICJfIikgJT4lIAogICAgcmVhZF9kZWxpbShkZWxpbSA9ICJfIiwgY29sX25hbWVzID0gYygibW92aWVfaWQiLCAidGl0bGUiLCAiZ2VucmVzIikpCmBgYAoKSW4gb3JkZXIgdG8gYWNjZXNzIHRoZXNlIGRhdGEgZWFzaWx5LCB3ZSB3aWxsIG1lcmdlIHRoZW0gaW50byBhIHNpbmdsZSBkYXRhZnJhbWUgaW5zdGVhZCBvZiBoYXZpbmcgZGF0YSBzcHJlYWQgYWNyb3NzIDMgZGlmZmVyZW50IHRhYmxlcy4gIAoKYGBge3J9Cm1vdl9kYXRhIDwtIHJhdGluZ3MgJT4lIAogICAgZnVsbF9qb2luKHVzZXJzLCBieSA9ICJ1c2VyX2lkIikgJT4lIAogICAgZnVsbF9qb2luKG1vdmllcywgYnkgPSAibW92aWVfaWQiKQpgYGAKCkxldCdzIGNoZWNrIHRoZSBhdmVyYWdlIHJhdGluZyBmb3IgZWFjaCBtb3ZpZSBncm91cGVkIGJ5IGdlbmRlciBvZiB2b3RpbmcgdXNlcnMuICAKCmBgYHtyfQptZWFuX3JhdGluZ3MgPC0gbW92X2RhdGEgJT4lIAogICAgZ3JvdXBfYnkodGl0bGUsIGdlbmRlcikgJT4lIAogICAgc3VtbWFyaXNlKG1lYW5fcmF0aW5nID0gbWVhbihyYXRpbmcpKSAlPiUgCiAgICBzcHJlYWQoZ2VuZGVyLCBtZWFuX3JhdGluZywgZmlsbCA9IDApICU+JSAKICAgIHNlbGVjdCgtYDxOQT5gKQpgYGAKCldlIG1heSB3YW50IHRvIGZpbHRlciB0aGlzIGRhdGFmcmFtZSB0byBrZWVwIG9ubHkgbW92aWVzIHRoYXQgd2VyZSByYXRlZCBieSBhdCBsZWFzdCAyNTAgdXNlcnMuIFNvIGxldCdzIGdldCB0aGUgdG90YWwgbnVtYmVyIG9mIHVzZXJzIHRoYXQgcmF0ZWQgZWFjaCBtb3ZpZS4gIAoKYGBge3J9CnJhdGluZ3NfYnlfdGl0bGUgPC0gbW92X2RhdGEgJT4lIAogICAgZ3JvdXBfYnkodGl0bGUpICU+JSAKICAgIHN1bW1hcmlzZSh2b3RpbmdfdXNlcnMgPSBuKCkpCmBgYAoKYGBge3J9CmFjdGl2ZV90aXRsZXMgPC0gcmF0aW5nc19ieV90aXRsZSAlPiUgCiAgICBmaWx0ZXIodm90aW5nX3VzZXJzID49IDI1MCkKYGBgCgpOb3cgd2UgY2FuIGdldCB0aGUgbWVhbiByYXRpbmcgZm9yIHRoaXMgbmV3IHN1YnNldCBvZiBtb3ZpZXMuICAKCmBgYHtyfQphY3RpdmVfbWVhbl9yYXRpbmdzIDwtIG1lYW5fcmF0aW5ncyAlPiUgCiAgICBmaWx0ZXIodGl0bGUgJWluJSBhY3RpdmVfdGl0bGVzJHRpdGxlKQpgYGAKCkxldCdzIHZpZXcgdGhlIHRvcCByYXRlZCBtb3ZpZXMgYWNyb3NzIG1lbiBhbmQgd29tZW4gdm90ZXJzLiAgCgpgYGB7cn0KdG9wX21hbGVfcmF0aW5ncyA8LSBhY3RpdmVfbWVhbl9yYXRpbmdzICU+JSAKICAgIGFycmFuZ2UoZGVzYyhNKSkgJT4lIAogICAgc2VsZWN0KHRpdGxlLCBNKQpgYGAKCmBgYHtyfQp0b3BfZmVtYWxlX3JhdGluZ3MgPC0gYWN0aXZlX21lYW5fcmF0aW5ncyAlPiUgCiAgICBhcnJhbmdlKGRlc2MoRikpICU+JSAKICAgIHNlbGVjdCh0aXRsZSwgRikKYGBgCgoKIyMgTWVhc3VyaW5nIHJhdGluZyBkaXNhZ3JlZW1lbnQgIAoKSWYgd2Ugd2FudCB0byBmaW5kIG1vdmllcyB0aGF0IGFyZSBtb3N0IGRpdmlzaXZlIGJldHdlZW4gbWFsZSBhbmQgZmVtYWxlIHZpZXdlcnMsIHdlIGNhbiBhZGQgYSBuZXcgYG1lYW5fZGlmZmAgY29sdW1uIHRvIHRoZSBgbWVhbl9yYXRpbmdzYCBkYXRhc2V0LCBzaG93aW5nIHRoZSBkaWZmZXJlbmNlIGluIG1lYW4gcmF0aW5nIGFjcm9zcyBib3RoIGdlbmRlcnMuICAKCmBgYHtyfQphY3RpdmVfbWVhbl9yYXRpbmdzICU8PiUgIAogICAgbXV0YXRlKG1lYW5fZGlmZiA9IE0gLSBGKQpgYGAKClNvcnRpbmcgdGhlIGRhdGFzZXQgYnkgdGhpcyBuZXcgY29sdW1uIGluIGFzY2VuZGluZyBvcmRlciB3aWxsIHJldHVybiBtb3ZpZXMgdGhhdCB3ZXJlIHJhdGVkIGhpZ2hlciBieSB3b21lbiwgd2hpbGUgc29ydGluZyBpbiBkZXNjZW5kaW5nIG9yZGVyIHdpbGwgcmV0dXJuIG1vdmllcyByYXRlZCBoaWdoZXIgYnkgbWVuLiAgCgpgYGB7cn0KaGlnaF9yYXRpbmdzX21hbGUgPC0gYWN0aXZlX21lYW5fcmF0aW5ncyAlPiUgCiAgICBhcnJhbmdlKGRlc2MobWVhbl9kaWZmKSkKaGlnaF9yYXRpbmdzX2ZlbWFsZSA8LSBhY3RpdmVfbWVhbl9yYXRpbmdzICU+JSAKICAgIGFycmFuZ2UobWVhbl9kaWZmKQpgYGAKCk1vdmllcyB0aGF0IGVsaWNpdGVkIHRoZSBtb3N0IGRpc2FncmVlbWVudCBhbW9uZyBhbGwgdmlld2VycyAoYm90aCBtYWxlIGFuZCBmZW1hbGUpIGNhbiBiZSBmb3VuZCBieSBleHBsb2l0aW5nIHRoZSBzdGFuZGFyZCBkZXZpYXRpb24gb2YgcmF0aW5ncy4gIAoKYGBge3J9CnJhdGluZ19zdGRfYnlfdGl0bGUgPC0gbW92X2RhdGEgJT4lIAogICAgZ3JvdXBfYnkodGl0bGUpICU+JSAKICAgIHN1bW1hcmlzZShzdGQgPSBzZChyYXRpbmcpKQpgYGAKCldlIHdpbGwgb25seSBrZWVwIG1vdmllcyB0aGF0IHdlcmUgcmF0ZWQgYXQgbGVhc3QgMjUwIHRpbWVzLCBhcyBiZWZvcmUsIGFuZCBzb3J0IHRoZSBkYXRhIHRvIGZpbmQgdGhlIG1vc3QgY29udHJvdmVyc2UgdGl0bGVzLiAgCgpgYGB7cn0KcmF0aW5nX3N0ZF9ieV90aXRsZSAlPD4lIAogICAgZmlsdGVyKHRpdGxlICVpbiUgYWN0aXZlX21lYW5fcmF0aW5ncyR0aXRsZSkgJT4lIAogICAgYXJyYW5nZShkZXNjKHN0ZCkpCmBgYAoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTW92aWVMZW5zIDFNIERhdGFzZXQiCmF1dGhvcjogIlJvYmVydG8gUHJlc3RlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDogaHRtbF9ub3RlYm9vawplZGl0b3Jfb3B0aW9uczogCiAgY2h1bmtfb3V0cHV0X3R5cGU6IGlubGluZQotLS0KCkZyb20gdGhlIGJvb2sgKGNoYXB0ZXIgMTQuMik6ICAKCj4gW0dyb3VwTGVucyBSZXNlYXJjaF0oaHR0cDovL3d3dy5ncm91cGxlbnMub3JnL25vZGUvNzMpIHByb3ZpZGVzIGEgbnVtYmVyIG9mIGNvbGxlY3Rpb25zIG9mIG1vdmllIHJhdGluZ3MgZGF0YSBjb2xsZWN0ZWQgZnJvbSB1c2VycyBvZiBNb3ZpZUxlbnMgaW4gdGhlIGxhdGUgMTk5MHMgYW5kIGVhcmx5IDIwMDBzLiBUaGUgZGF0YSBwcm92aWRlIG1vdmllIHJhdGluZ3MsIG1vdmllIG1ldGFkYXRhIChnZW5yZXMgYW5kIHllYXIpLCBhbmQgZGVtb2dyYXBoaWMgZGF0YSBhYm91dCB0aGUgdXNlcnMgKGFnZSwgemlwIGNvZGUsIGdlbmRlciBpZGVudGlmaWNhdGlvbiwgYW5kIG9jY3VwYXRpb24pLiBbLi4uXSBUaGUgTW92aWVMZW5zIDFNIGRhdGFzZXQgY29udGFpbnMgMSBtaWxsaW9uIHJhdGluZ3MgY29sbGVjdGVkIGZyb20gNiwwMDAgdXNlcnMgb24gNCwwMDAgbW92aWVzLiAgCgpfX18gCgpgYGB7ciwgcmVzdWx0cz0naGlkZScsIG1lc3NhZ2U9RkFMU0UsIHdhcm5pbmc9RkFMU0V9CmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KG1hZ3JpdHRyKQpgYGAKCl9fXyAKCiMjIExvYWRpbmcgdGhlIGRhdGEgIAoKVGhpcyBkYXRhc2V0IGlzIHNwbGl0IG92ZXIgMyBmaWxlcywgY29udGFpbmluZyBkaWZmZXJlbnQgaW5mb3JtYXRpb24uIFRoZSBgbW92aWVzYCBkYXRhc2V0IGNvbnRhaW5zIG1vdmllcyBpbmZvcm1hdGlvbiwgdGhlIGB1c2Vyc2AgZGF0YXNldCBjb250YWlucyB2b3RpbmcgdXNlcnMgaW5mb3JtYXRpb24gYW5kIHRoZSBgcmF0aW5nc2AgZGF0YXNldCBjb250YWlucyBtb3ZpZSByYXRpbmdzLiAgCgpUbyBteSBrbm93bGVkZ2UsIG5vIGBSYCBwYWNrYWdlIGlzIGNhcGFibGUgb2YgcmVhZGluZyBhIGZpbGUgd2l0aCBkb3VibGUgY2hhcmFjdGVycyBhcyBjb2x1bW4gZGVsaW1pdGVyLCBhcyBpcyBpbiB0aGlzIGNhc2UsIHdoZXJlIGVhY2ggY29sdW1uIGluIHRoZSBmaWxlcyBpcyBkZWxpbWl0ZWQgdXNpbmcgYDo6YC4gRm9yIHRoaXMgcmVhc29uLCB3ZSBhcmUgZmlyc3QgZ29pbmcgdG8gcmVhZCBpbiB0aGUgZW50aXJlIHJhdyBmaWxlcywgcmVwbGFjZSBvY2N1cnJlbmNlcyBvZiBgOjpgIHdpdGggYF9gLCBhbmQgdGhlbiBwYXJzZSB0aGUgZGF0YXNldHMgdXNpbmcgYSBjbGFzc2ljIGByZWFkX2RlbGltYC4gQW55IG90aGVyIGRlbGltaXRlciBjYW4gYmUgdXNlZCBpbnN0ZWFkIG9mIGBfYCwgYXMgbG9uZyBhcyBpdCBpcyBub3QgYWxyZWFkeSBwcmVzZW50IGluIHRoZSBmaWxlIChvdGhlcndpc2UgeW91IHdpbGwgaGF2ZSBpc3N1ZXMgd2hlbiB0cnlpbmcgdG8gbG9hZCB0aGUgZGF0YSkuICAKCmBgYHtyfQp1c2VycyA8LSByZWFkX2ZpbGUoIi4uL2RhdGFzZXRzL21vdmllbGVucy91c2Vycy5kYXQiKSAlPiUgCiAgICBzdHJfcmVwbGFjZV9hbGwoIjo6IiwgIl8iKSAlPiUgCiAgICByZWFkX2RlbGltKGRlbGltID0gIl8iLCBjb2xfbmFtZXMgPSBjKCJ1c2VyX2lkIiwgImdlbmRlciIsICJhZ2UiLCAib2NjdXBhdGlvbiIsICJ6aXAiKSkKCnJhdGluZ3MgPC0gcmVhZF9maWxlKCIuLi9kYXRhc2V0cy9tb3ZpZWxlbnMvcmF0aW5ncy5kYXQiKSAlPiUgCiAgICBzdHJfcmVwbGFjZV9hbGwoIjo6IiwgIl8iKSAlPiUgCiAgICByZWFkX2RlbGltKGRlbGltID0gIl8iLCBjb2xfbmFtZXMgPSBjKCJ1c2VyX2lkIiwgIm1vdmllX2lkIiwgInJhdGluZyIsICJ0aW1lc3RhbXAiKSkKCm1vdmllcyA8LSByZWFkX2ZpbGUoIi4uL2RhdGFzZXRzL21vdmllbGVucy9tb3ZpZXMuZGF0IikgJT4lIAogICAgc3RyX3JlcGxhY2VfYWxsKCI6OiIsICJfIikgJT4lIAogICAgcmVhZF9kZWxpbShkZWxpbSA9ICJfIiwgY29sX25hbWVzID0gYygibW92aWVfaWQiLCAidGl0bGUiLCAiZ2VucmVzIikpCmBgYAoKSW4gb3JkZXIgdG8gYWNjZXNzIHRoZXNlIGRhdGEgZWFzaWx5LCB3ZSB3aWxsIG1lcmdlIHRoZW0gaW50byBhIHNpbmdsZSBkYXRhZnJhbWUgaW5zdGVhZCBvZiBoYXZpbmcgZGF0YSBzcHJlYWQgYWNyb3NzIDMgZGlmZmVyZW50IHRhYmxlcy4gIAoKYGBge3J9Cm1vdl9kYXRhIDwtIHJhdGluZ3MgJT4lIAogICAgZnVsbF9qb2luKHVzZXJzLCBieSA9ICJ1c2VyX2lkIikgJT4lIAogICAgZnVsbF9qb2luKG1vdmllcywgYnkgPSAibW92aWVfaWQiKQpgYGAKCmBgYHtyfQpoZWFkKG1vdl9kYXRhKQpgYGAKCgpMZXQncyBjaGVjayB0aGUgYXZlcmFnZSByYXRpbmcgZm9yIGVhY2ggbW92aWUgZ3JvdXBlZCBieSBnZW5kZXIgb2Ygdm90aW5nIHVzZXJzLiAgCgpgYGB7cn0KbWVhbl9yYXRpbmdzIDwtIG1vdl9kYXRhICU+JSAKICAgIGdyb3VwX2J5KHRpdGxlLCBnZW5kZXIpICU+JSAKICAgIHN1bW1hcmlzZShtZWFuX3JhdGluZyA9IG1lYW4ocmF0aW5nKSkgJT4lIAogICAgc3ByZWFkKGdlbmRlciwgbWVhbl9yYXRpbmcsIGZpbGwgPSAwKSAlPiUgCiAgICBzZWxlY3QoLWA8TkE+YCkKYGBgCgpgYGB7cn0KaGVhZChtZWFuX3JhdGluZ3MpCmBgYAoKCldlIG1heSB3YW50IHRvIGZpbHRlciB0aGlzIGRhdGFmcmFtZSB0byBrZWVwIG9ubHkgbW92aWVzIHRoYXQgd2VyZSByYXRlZCBieSBhdCBsZWFzdCAyNTAgdXNlcnMuIFNvIGxldCdzIGdldCB0aGUgdG90YWwgbnVtYmVyIG9mIHVzZXJzIHRoYXQgcmF0ZWQgZWFjaCBtb3ZpZS4gIAoKYGBge3J9CnJhdGluZ3NfYnlfdGl0bGUgPC0gbW92X2RhdGEgJT4lIAogICAgZ3JvdXBfYnkodGl0bGUpICU+JSAKICAgIHN1bW1hcmlzZSh2b3RpbmdfdXNlcnMgPSBuKCkpCmBgYAoKYGBge3J9CmhlYWQocmF0aW5nc19ieV90aXRsZSkKYGBgCgoKYGBge3J9CmFjdGl2ZV90aXRsZXMgPC0gcmF0aW5nc19ieV90aXRsZSAlPiUgCiAgICBmaWx0ZXIodm90aW5nX3VzZXJzID49IDI1MCkKYGBgCgpgYGB7cn0KaGVhZChhY3RpdmVfdGl0bGVzKQpgYGAKCgpOb3cgd2UgY2FuIGdldCB0aGUgbWVhbiByYXRpbmcgZm9yIHRoaXMgbmV3IHN1YnNldCBvZiBtb3ZpZXMuICAKCmBgYHtyfQphY3RpdmVfbWVhbl9yYXRpbmdzIDwtIG1lYW5fcmF0aW5ncyAlPiUgCiAgICBmaWx0ZXIodGl0bGUgJWluJSBhY3RpdmVfdGl0bGVzJHRpdGxlKQpgYGAKCkxldCdzIHZpZXcgdGhlIHRvcCByYXRlZCBtb3ZpZXMgYWNyb3NzIG1lbiBhbmQgd29tZW4gdm90ZXJzLiAgCgpgYGB7cn0KdG9wX21hbGVfcmF0aW5ncyA8LSBhY3RpdmVfbWVhbl9yYXRpbmdzICU+JSAKICAgIGFycmFuZ2UoZGVzYyhNKSkgCmBgYAoKYGBge3J9CnRvcF9tYWxlX3JhdGluZ3NbMToxMCwgXQpgYGAKCgpgYGB7cn0KdG9wX2ZlbWFsZV9yYXRpbmdzIDwtIGFjdGl2ZV9tZWFuX3JhdGluZ3MgJT4lIAogICAgYXJyYW5nZShkZXNjKEYpKSAKYGBgCgpgYGB7cn0KdG9wX2ZlbWFsZV9yYXRpbmdzWzE6MTAsIF0KYGBgCgoKIyMgTWVhc3VyaW5nIHJhdGluZyBkaXNhZ3JlZW1lbnQgIAoKSWYgd2Ugd2FudCB0byBmaW5kIG1vdmllcyB0aGF0IGFyZSBtb3N0IGRpdmlzaXZlIGJldHdlZW4gbWFsZSBhbmQgZmVtYWxlIHZpZXdlcnMsIHdlIGNhbiBhZGQgYSBuZXcgYG1lYW5fZGlmZmAgY29sdW1uIHRvIHRoZSBgbWVhbl9yYXRpbmdzYCBkYXRhc2V0LCBzaG93aW5nIHRoZSBkaWZmZXJlbmNlIGluIG1lYW4gcmF0aW5nIGFjcm9zcyBib3RoIGdlbmRlcnMuICAKCmBgYHtyfQphY3RpdmVfbWVhbl9yYXRpbmdzICU8PiUgIAogICAgbXV0YXRlKG1lYW5fZGlmZiA9IE0gLSBGKQpgYGAKClNvcnRpbmcgdGhlIGRhdGFzZXQgYnkgdGhpcyBuZXcgY29sdW1uIGluIGFzY2VuZGluZyBvcmRlciB3aWxsIHJldHVybiBtb3ZpZXMgdGhhdCB3ZXJlIHJhdGVkIGhpZ2hlciBieSB3b21lbiwgd2hpbGUgc29ydGluZyBpbiBkZXNjZW5kaW5nIG9yZGVyIHdpbGwgcmV0dXJuIG1vdmllcyByYXRlZCBoaWdoZXIgYnkgbWVuLiAgCgpgYGB7cn0KaGlnaF9yYXRpbmdzX21hbGUgPC0gYWN0aXZlX21lYW5fcmF0aW5ncyAlPiUgCiAgICBhcnJhbmdlKGRlc2MobWVhbl9kaWZmKSkKYGBgCgpgYGB7cn0KaGVhZChoaWdoX3JhdGluZ3NfbWFsZSkKYGBgCgpgYGB7cn0KaGlnaF9yYXRpbmdzX2ZlbWFsZSA8LSBhY3RpdmVfbWVhbl9yYXRpbmdzICU+JSAKICAgIGFycmFuZ2UobWVhbl9kaWZmKQpgYGAKCmBgYHtyfQpoZWFkKGhpZ2hfcmF0aW5nc19mZW1hbGUpCmBgYAoKCk1vdmllcyB0aGF0IGVsaWNpdGVkIHRoZSBtb3N0IGRpc2FncmVlbWVudCBhbW9uZyBhbGwgdmlld2VycyAoYm90aCBtYWxlIGFuZCBmZW1hbGUpIGNhbiBiZSBmb3VuZCBieSBleHBsb2l0aW5nIHRoZSBzdGFuZGFyZCBkZXZpYXRpb24gb2YgcmF0aW5ncy4gIAoKYGBge3J9CnJhdGluZ19zdGRfYnlfdGl0bGUgPC0gbW92X2RhdGEgJT4lIAogICAgZ3JvdXBfYnkodGl0bGUpICU+JSAKICAgIHN1bW1hcmlzZShzdGQgPSBzZChyYXRpbmcpKQpgYGAKCldlIHdpbGwgb25seSBrZWVwIG1vdmllcyB0aGF0IHdlcmUgcmF0ZWQgYXQgbGVhc3QgMjUwIHRpbWVzLCBhcyBiZWZvcmUsIGFuZCBzb3J0IHRoZSBkYXRhIHRvIGZpbmQgdGhlIG1vc3QgY29udHJvdmVyc2UgdGl0bGVzLiAgCgpgYGB7cn0KcmF0aW5nX3N0ZF9ieV90aXRsZSAlPD4lIAogICAgZmlsdGVyKHRpdGxlICVpbiUgYWN0aXZlX21lYW5fcmF0aW5ncyR0aXRsZSkgJT4lIAogICAgYXJyYW5nZShkZXNjKHN0ZCkpCmBgYAoKYGBge3J9CnJhdGluZ19zdGRfYnlfdGl0bGVbMToxMCwgXQpgYGAKCl9fXyAKCmBgYHtyfQpzZXNzaW9uSW5mbygpCmBgYAoK</div>
 
 
 

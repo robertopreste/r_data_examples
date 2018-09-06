@@ -1,27 +1,41 @@
 ---
 title: "MovieLens 1M Dataset"
-output: html_notebook
+author: "Roberto Preste"
+date: "`r Sys.Date()`"
+output: github_document
+editor_options: 
+  chunk_output_type: inline
 ---
 
-```{r}
+From the book (chapter 14.2):  
+
+> [GroupLens Research](http://www.grouplens.org/node/73) provides a number of collections of movie ratings data collected from users of MovieLens in the late 1990s and early 2000s. The data provide movie ratings, movie metadata (genres and year), and demographic data about the users (age, zip code, gender identification, and occupation). [...] The MovieLens 1M dataset contains 1 million ratings collected from 6,000 users on 4,000 movies.  
+
+___ 
+
+```{r, results='hide', message=FALSE, warning=FALSE}
 library(tidyverse)
+library(magrittr)
 ```
+
+___ 
 
 ## Loading the data  
 
 This dataset is split over 3 files, containing different information. The `movies` dataset contains movies information, the `users` dataset contains voting users information and the `ratings` dataset contains movie ratings.  
+
 To my knowledge, no `R` package is capable of reading a file with double characters as column delimiter, as is in this case, where each column in the files is delimited using `::`. For this reason, we are first going to read in the entire raw files, replace occurrences of `::` with `_`, and then parse the datasets using a classic `read_delim`. Any other delimiter can be used instead of `_`, as long as it is not already present in the file (otherwise you will have issues when trying to load the data).  
 
 ```{r}
-users <- read_file("datasets/movielens/users.dat") %>% 
+users <- read_file("../datasets/movielens/users.dat") %>% 
     str_replace_all("::", "_") %>% 
     read_delim(delim = "_", col_names = c("user_id", "gender", "age", "occupation", "zip"))
 
-ratings <- read_file("datasets/movielens/ratings.dat") %>% 
+ratings <- read_file("../datasets/movielens/ratings.dat") %>% 
     str_replace_all("::", "_") %>% 
     read_delim(delim = "_", col_names = c("user_id", "movie_id", "rating", "timestamp"))
 
-movies <- read_file("datasets/movielens/movies.dat") %>% 
+movies <- read_file("../datasets/movielens/movies.dat") %>% 
     str_replace_all("::", "_") %>% 
     read_delim(delim = "_", col_names = c("movie_id", "title", "genres"))
 ```
@@ -34,6 +48,11 @@ mov_data <- ratings %>%
     full_join(movies, by = "movie_id")
 ```
 
+```{r}
+head(mov_data)
+```
+
+
 Let's check the average rating for each movie grouped by gender of voting users.  
 
 ```{r}
@@ -44,6 +63,11 @@ mean_ratings <- mov_data %>%
     select(-`<NA>`)
 ```
 
+```{r}
+head(mean_ratings)
+```
+
+
 We may want to filter this dataframe to keep only movies that were rated by at least 250 users. So let's get the total number of users that rated each movie.  
 
 ```{r}
@@ -53,9 +77,19 @@ ratings_by_title <- mov_data %>%
 ```
 
 ```{r}
+head(ratings_by_title)
+```
+
+
+```{r}
 active_titles <- ratings_by_title %>% 
     filter(voting_users >= 250)
 ```
+
+```{r}
+head(active_titles)
+```
+
 
 Now we can get the mean rating for this new subset of movies.  
 
@@ -68,14 +102,21 @@ Let's view the top rated movies across men and women voters.
 
 ```{r}
 top_male_ratings <- active_mean_ratings %>% 
-    arrange(desc(M)) %>% 
-    select(title, M)
+    arrange(desc(M)) 
 ```
 
 ```{r}
+top_male_ratings[1:10, ]
+```
+
+
+```{r}
 top_female_ratings <- active_mean_ratings %>% 
-    arrange(desc(F)) %>% 
-    select(title, F)
+    arrange(desc(F)) 
+```
+
+```{r}
+top_female_ratings[1:10, ]
 ```
 
 
@@ -93,9 +134,21 @@ Sorting the dataset by this new column in ascending order will return movies tha
 ```{r}
 high_ratings_male <- active_mean_ratings %>% 
     arrange(desc(mean_diff))
+```
+
+```{r}
+head(high_ratings_male)
+```
+
+```{r}
 high_ratings_female <- active_mean_ratings %>% 
     arrange(mean_diff)
 ```
+
+```{r}
+head(high_ratings_female)
+```
+
 
 Movies that elicited the most disagreement among all viewers (both male and female) can be found by exploiting the standard deviation of ratings.  
 
@@ -111,5 +164,15 @@ We will only keep movies that were rated at least 250 times, as before, and sort
 rating_std_by_title %<>% 
     filter(title %in% active_mean_ratings$title) %>% 
     arrange(desc(std))
+```
+
+```{r}
+rating_std_by_title[1:10, ]
+```
+
+___ 
+
+```{r}
+sessionInfo()
 ```
 
