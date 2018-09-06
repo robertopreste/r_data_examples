@@ -1,47 +1,80 @@
 ---
 title: "USA.gov Data from Bitly"
-output: html_notebook
+author: "Roberto Preste"
+date: "`r Sys.Date()`"
+output: github_document
+editor_options: 
+  chunk_output_type: inline
 ---
 
-```{r}
+From the book (chapter 14.1):  
+
+> In 2011, URL shortening service [Bitly](https://bitly.com/) partnered with the US government website [USA.gov](https://www.usa.gov/) to provide a feed of anonymous data gathered from users who shorten links ending with .gov or .mil. In 2011, a live feed as well as hourly snapshots were available as downloadable text files. This service is shut down at the time of this writing (2017)  
+
+___
+
+```{r, results='hide', message=FALSE, warning=FALSE}
 library(tidyverse)
+library(magrittr)
 library(jsonlite)
 ```
 
+___
+
 ## Loading the data  
 
-The dataset is imported using the `jsonlite` package. Its `fromJSON` function does not work in this case, since this is a NDJSON file, meaning that multiple JSON objects are contained in the same file.  
+The dataset is in [JSON](https://www.json.org) format, so it is imported using the `jsonlite` package. Its `fromJSON` function however does not work in this case, since this is a NDJSON file, meaning that multiple JSON objects are contained in the same file.  
 We will use the `stream_in` function to load the dataset instead.  
 
 ```{r}
-path <- "datasets/bitly_usagov/example.txt"
+path <- "../datasets/bitly_usagov/example.txt"
 records <- stream_in(file(path))
 ```
 
-Converting `records` object to a tibble.  
+Let's convert the `records` object to a tibble.  
 
 ```{r}
 records %<>% as_tibble()
 ```
 
+```{r}
+head(records)
+```
+
 
 ## Counting time zones  
+
+We may be interested in counting the most often-occurring time zones.  
 
 ```{r}
 tz_counts <- records %>% 
     count(tz) 
 ```
 
-Let's replace missing values. 
+```{r}
+tz_counts
+```
+
+
+There are some missing values, so let's first replace them.  
 
 ```{r}
-tz_counts %<>%  
+records %<>% 
     mutate(tz = replace(tz, tz == "", "Missing"))
-tz_counts$tz %<>%  
+records$tz %<>% 
     replace_na("Unknown")
 ```
 
-Sort entries in descending order. 
+```{r}
+tz_counts <- records %>% 
+    count(tz) 
+```
+
+```{r}
+tz_counts
+```
+
+Now we can sort entries in descending order. 
 
 ```{r}
 tz_counts %<>%  
@@ -50,7 +83,7 @@ tz_counts %<>%
 
 Let's plot a bar chart with the first 10 entries from `tz_counts`.  
 
-```{r}
+```{r, dpi=200}
 head(tz_counts, n = 10) %>% 
     ggplot(aes(x = reorder(tz, n), y = n, fill = tz)) + 
     geom_col() + 
@@ -59,7 +92,7 @@ head(tz_counts, n = 10) %>%
     labs(title = "Top time zones", x = "Time zone", y = "Count")
 ```
 
-Let's parse the `a` column to get some information about most common browsers used.  
+Let's parse the `a` column to get some information about the most commonly used browsers.  
 
 ```{r}
 records %<>%  
@@ -94,6 +127,9 @@ agg_counts <- records_notnull %>%
     group_by(tz, os) %>% 
     summarise(Users = n()) %>% 
     spread(os, Users, fill = 0)
+```
+
+```{r}
 head(agg_counts)
 ```
 
@@ -103,6 +139,7 @@ Let's add a `total` column that will be useful to sort our data based on the tot
 agg_counts %<>%  
     mutate(total = sum(NonWin, Win)) %>% 
     arrange(desc(total))
+
 agg_counts_top10 <- agg_counts[1:10, ]
 ```
 
@@ -114,6 +151,8 @@ count_subset <- agg_counts_top10 %>%
     arrange(tz, users) %>% 
     select(-total)
 ```
+
+Now we can plot these data.  
 
 ```{r}
 count_subset %>% 
@@ -132,12 +171,19 @@ count_subset %<>%
     mutate(normed_total = users / sum(users))
 ```
 
+Now we can plot these normalized data.  
+
 ```{r}
 count_subset %>% 
     ggplot(aes(x = reorder(tz, users), y = normed_total, fill = os)) + 
     geom_col(position = "dodge") + 
     coord_flip() + 
-    labs(x = "Time zone", y = "User ration", title = "Windows and non-Windows users ratio per time zone", fill = "OS")
+    labs(x = "Time zone", y = "User ratio", title = "Windows and non-Windows users ratio per time zone", fill = "OS")
 ```
 
+___  
+
+```{r}
+sessionInfo()
+```
 
