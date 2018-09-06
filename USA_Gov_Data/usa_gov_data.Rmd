@@ -154,7 +154,7 @@ count_subset <- agg_counts_top10 %>%
 
 Now we can plot these data.  
 
-```{r}
+```{r, dpi=200}
 count_subset %>% 
     ggplot(aes(x = reorder(tz, users), y = users, fill = os)) + 
     geom_col(position = "dodge") + 
@@ -173,7 +173,7 @@ count_subset %<>%
 
 Now we can plot these normalized data.  
 
-```{r}
+```{r, dpi=200}
 count_subset %>% 
     ggplot(aes(x = reorder(tz, users), y = normed_total, fill = os)) + 
     geom_col(position = "dodge") + 
