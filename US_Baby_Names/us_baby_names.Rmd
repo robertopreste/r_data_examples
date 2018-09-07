@@ -1,0 +1,130 @@
+---
+title: "US Baby Names 1880-2010"
+author: "Roberto Preste"
+date: "`r Sys.Date()`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+From the book (chapter 14.3):  
+
+>The United States Social Security Administration (SSA) has made available data on the frequency of baby names from 1880 through the present. [...] As of this writing, the US Social Security Administration makes available data files, one per year, containing the total number of births for each sex/name combination. The raw archive of these files can be obtained from [http://www.ssa.gov/oact/baby names/limits.html](http://www.ssa.gov/oact/baby names/limits.html).  
+
+___ 
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+library(tidyverse)
+library(magrittr)
+```
+
+## Loading the data  
+
+This dataset is split by year, so we'll assemble these files into a single dataframe, to which we'll add a new `year` column.  
+
+```{r}
+years <- c(1880:2010)
+names <- tibble("name" = NA, "sex" = NA, "births" = NA, "year" = NA)
+
+for (year in years) {
+    path <- str_c("../datasets/babynames/yob", year, ".txt", sep = "")
+    frame <- read_csv(path, col_names = c("name", "sex", "births"), 
+                      col_types = cols(col_character(), col_character(), col_integer()))
+    frame %<>% mutate("year" = year)
+    names %<>% bind_rows(frame)
+}
+names %<>% drop_na()
+```
+
+We can now start aggregating this data by year and sex.  
+
+```{r}
+total_births <- names %>% 
+    group_by(year, sex) %>% 
+    summarise(tot_births = sum(births)) 
+```
+
+Let's plot these data to view the total number of births per sex from 1880.  
+
+```{r, dpi=200}
+total_births %>% ggplot(aes(x = year, y = tot_births, color = sex)) + 
+    geom_line() + 
+    labs(x = "Year", y = "Births", title = "Total number of births per sex")
+```
+
+Now we'll insert a new column that will contain the proportion of babies with each name relative to the total number of births for a given year.  
+I had a few issues with finding a good way to apply some sort of mapping to the data, as done in the original example in Python, but I'm still quite scratching the surface of the `tidyverse`... I managed to perform a join between the `names` table and one with the total number of births per year and sex, and then calculate the desired ratio from that.  
+
+```{r}
+births_year_sex <- names %>% 
+    group_by(year, sex) %>% 
+    summarise(tot_births = sum(births))
+
+names %<>% inner_join(births_year_sex, by = c("year", "sex"))
+```
+
+```{r}
+names %<>% 
+    mutate(prop = births / tot_births) %>% 
+    select(-tot_births)
+```
+
+```{r}
+head(names)
+```
+
+
+Let's subset these data to the top 1000 names for each year/sex combination.  
+
+```{r}
+top1000 <- names %>% 
+    group_by(year, sex) %>% 
+    top_n(1000, wt = births)
+```
+
+```{r}
+head(top1000)
+```
+
+
+## Analyzing naming trends  
+
+Let's first split the `top1000` dataset into boys and girls subsets.  
+
+```{r}
+boys <- top1000 %>% 
+    filter(sex == "M")
+girls <- top1000 %>% 
+    filter(sex == "F")
+```
+
+For visualization purposes, it is better to convert this type of dataframe to the so-called `wide` format.  
+
+```{r}
+top1000 %>% 
+```
+
+
+We can now plot some data about occurrence of specific names during time.  
+
+```{r}
+top1000 %>% 
+    filter((name == "John" & sex == "M") | (name == "Harry" & sex == "M") | 
+           (name == "Mary" & sex == "F") | (name == "Marilyn" & sex == "F")) %>% 
+    ggplot(aes(x = year, y = births, color = name)) + 
+    geom_line() + 
+    facet_grid(name ~ .) + 
+    labs(title = "Number of births per year", subtitle = "John, Harry, Mary, Marilyn")
+```
+
+```{r}
+# (Another useful plot for the same data might be this one. I actually prefer it better.)
+top1000 %>% 
+    filter((name == "John" & sex == "M") | (name == "Harry" & sex == "M") | 
+           (name == "Mary" & sex == "F") | (name == "Marilyn" & sex == "F")) %>% 
+    ggplot(aes(x = year, y = births, color = name)) + 
+    geom_line() + 
+    labs(title = "Number of births per year", subtitle = "John, Harry, Mary, Marilyn")
+```
+
+
