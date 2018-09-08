@@ -18,6 +18,8 @@ library(tidyverse)
 library(magrittr)
 ```
 
+___
+
 ## Loading the data  
 
 This dataset is split by year, so we'll assemble these files into a single dataframe, to which we'll add a new `year` column.  
@@ -36,6 +38,10 @@ for (year in years) {
 names %<>% drop_na()
 ```
 
+```{r}
+head(names)
+```
+
 We can now start aggregating this data by year and sex.  
 
 ```{r}
@@ -43,6 +49,11 @@ total_births <- names %>%
     group_by(year, sex) %>% 
     summarise(tot_births = sum(births)) 
 ```
+
+```{r}
+head(total_births)
+```
+
 
 Let's plot these data to view the total number of births per sex from 1880.  
 
@@ -83,7 +94,7 @@ top1000 <- names %>%
 ```
 
 ```{r}
-head(top1000)
+top1000
 ```
 
 
@@ -98,26 +109,20 @@ girls <- top1000 %>%
     filter(sex == "F")
 ```
 
-For visualization purposes, it is better to convert this type of dataframe to the so-called `wide` format.  
-
-```{r}
-top1000 %>% 
-```
-
-
 We can now plot some data about occurrence of specific names during time.  
 
-```{r}
+```{r, dpi=200}
 top1000 %>% 
     filter((name == "John" & sex == "M") | (name == "Harry" & sex == "M") | 
            (name == "Mary" & sex == "F") | (name == "Marilyn" & sex == "F")) %>% 
     ggplot(aes(x = year, y = births, color = name)) + 
     geom_line() + 
     facet_grid(name ~ .) + 
-    labs(title = "Number of births per year", subtitle = "John, Harry, Mary, Marilyn")
+    labs(title = "Number of births per year", subtitle = "John, Harry, Mary, Marilyn") + 
+    guides(color = FALSE)
 ```
 
-```{r}
+```{r, dpi=200}
 # (Another useful plot for the same data might be this one. I actually prefer it better.)
 top1000 %>% 
     filter((name == "John" & sex == "M") | (name == "Harry" & sex == "M") | 
@@ -127,4 +132,53 @@ top1000 %>%
     labs(title = "Number of births per year", subtitle = "John, Harry, Mary, Marilyn")
 ```
 
+### Measuring the increase in naming diversity  
+
+A possible explanation for the dicrease shown in the previous plots is that fewer parents are choosing common names like Harry, John, Mary and Marilyn for their children, during latest years. Let's confirm this hypothesis with actual data.  
+
+Let's first plot the proportion of the top 1000 names to see their trend.  
+
+```{r}
+top1000 %>% 
+    group_by(year, sex) %>% 
+    summarise(tot_prop = sum(prop)) %>% 
+    ggplot(aes(x = year, y = tot_prop, color = sex)) + 
+    geom_line() + 
+    scale_y_continuous(limits = c(0.0, 1.0)) + 
+    labs(y = "", title = "Sum of proportion of top 1000 common names")
+```
+
+This plot indeed shows a decrease in using common names roughly starting from the half of the 20^th^ century.  
+Let's now take the number of distinct names, sorted by popularity, in the top 50% of births. We'll start with boys born in 2010.  
+
+```{r}
+df <- boys %>% 
+    filter(year == 2010)
+df
+```
+
+```{r}
+df %<>% 
+    arrange(desc(prop)) %>% 
+    group_by(year) %>% 
+    mutate(cumprop = cumsum(prop)) 
+sum(df$cumprop <= 0.5) 
+```
+
+Now we can check the same amount for boys born in 1900.  
+
+```{r}
+df <- boys %>% 
+    filter(year == 1900)
+df %<>% arrange(desc(prop)) %>% 
+    group_by(year) %>% 
+    mutate(cumprop = cumsum(prop))
+sum(df$cumprop <= 0.5)
+```
+
+Let's now apply this operation for every year/sex combination in the `top1000` dataset.  
+
+```{r}
+app_cumprop <- function()
+```
 
