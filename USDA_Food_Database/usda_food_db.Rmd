@@ -1,19 +1,32 @@
 ---
 title: "USDA Food Database"
-output: html_notebook
+author: "Roberto Preste"
+date: "`r Sys.Date()`"
+output: github_document
+editor_options: 
+  chunk_output_type: inline
 ---
 
-```{r}
+From the book (chapter 14.4):  
+
+>The US Department of Agriculture makes available a database of food nutrient infor‐ mation. Programmer Ashley Williams made available a version of this database in JSON format.  
+
+___
+
+```{r, results='hide', message=FALSE, warning=FALSE}
 library(tidyverse)
+library(magrittr)
 library(jsonlite)
 ```
+
+___
 
 ## Loading the data  
 
 This data come from the US Department of Agriculture and report a set of food nutrient information. These data were made available by Ashley Williams in JSON format, where each food has a number of identifying attributes along with two lists of nutrients and portion sizes.  
 
 ```{r}
-path <- "datasets/usda_food/database.json"
+path <- "../datasets/usda_food/database.json"
 db <- as_tibble(fromJSON(path, flatten = T))
 ```
 
@@ -60,11 +73,21 @@ nutrients <-
     rename(nutrient = description, nutgroup = group)
 ```
 
+```{r}
+nutrients
+```
+
+
 Now we can merge the previously created `info` dataframe with `nutrients`.  
 
 ```{r}
 ndata <- full_join(info, nutrients, by = "id")
 ```
+
+```{r}
+ndata
+```
+
 
 Let's calculate median values by food group and nutrient type.  
 
@@ -74,9 +97,14 @@ result <- ndata %>%
     summarise(quant = median(value))
 ```
 
+```{r}
+result
+```
+
+
 Now we can view which foods contain most Zinc.  
 
-```{r}
+```{r, dpi=200}
 result %>% 
     filter(nutrient == "Zinc, Zn") %>% 
     ggplot(aes(x = reorder(fgroup, quant), y = quant, fill = fgroup)) + 
