@@ -1,11 +1,11 @@
 USDA Food Database
 ================
 Roberto Preste
-2018-09-08
+2019-01-13
 
 From the book (chapter 14.4):
 
-> The US Department of Agriculture makes available a database of food nutrient infor‐ mation. Programmer Ashley Williams made available a version of this database in JSON format.
+> The US Department of Agriculture makes available a database of food nutrient information. Programmer Ashley Williams made available a version of this database in JSON format.
 
 ------------------------------------------------------------------------
 
@@ -28,18 +28,23 @@ db <- as_tibble(fromJSON(path, flatten = T))
 ```
 
 ``` r
-head(db)
+db
 ```
 
-    ## # A tibble: 6 x 7
-    ##      id description      tags   manufacturer group    portions  nutrients 
-    ##   <int> <chr>            <list> <chr>        <chr>    <list>    <list>    
-    ## 1  1008 Cheese, caraway  <chr … ""           Dairy a… <data.fr… <data.fra…
-    ## 2  1009 Cheese, cheddar  <chr … ""           Dairy a… <data.fr… <data.fra…
-    ## 3  1018 Cheese, edam     <chr … ""           Dairy a… <data.fr… <data.fra…
-    ## 4  1019 Cheese, feta     <chr … ""           Dairy a… <data.fr… <data.fra…
-    ## 5  1028 Cheese, mozzare… <chr … ""           Dairy a… <data.fr… <data.fra…
-    ## 6  1029 Cheese, mozzare… <chr … ""           Dairy a… <data.fr… <data.fra…
+    ## # A tibble: 6,636 x 7
+    ##       id description       tags   manufacturer group  portions  nutrients 
+    ##  * <int> <chr>             <list> <chr>        <chr>  <list>    <list>    
+    ##  1  1008 Cheese, caraway   <chr … ""           Dairy… <data.fr… <data.fra…
+    ##  2  1009 Cheese, cheddar   <chr … ""           Dairy… <data.fr… <data.fra…
+    ##  3  1018 Cheese, edam      <chr … ""           Dairy… <data.fr… <data.fra…
+    ##  4  1019 Cheese, feta      <chr … ""           Dairy… <data.fr… <data.fra…
+    ##  5  1028 Cheese, mozzarel… <chr … ""           Dairy… <data.fr… <data.fra…
+    ##  6  1029 Cheese, mozzarel… <chr … ""           Dairy… <data.fr… <data.fra…
+    ##  7  1038 Cheese, romano    <chr … ""           Dairy… <data.fr… <data.fra…
+    ##  8  1039 Cheese, roquefort <chr … ""           Dairy… <data.fr… <data.fra…
+    ##  9  1048 Cheese spread, p… <chr … ""           Dairy… <data.fr… <data.fra…
+    ## 10  1049 Cream, fluid, ha… <chr … ""           Dairy… <data.fr… <data.fra…
+    ## # ... with 6,626 more rows
 
 Some of the features in this dataset are actually nested dataframes, as in `nutrients`.
 
@@ -345,10 +350,41 @@ result %>%
 
 ![](usda_food_db_files/figure-markdown_github/unnamed-chunk-15-1.png)
 
-We can also check which food is most dense in each nutrient.
+------------------------------------------------------------------------
 
 ``` r
-by_nutrient <- ndata %>% 
-    group_by(nutgroup, nutrient) %>% 
-    summarise(max_value = max(value))
+sessionInfo()
 ```
+
+    ## R version 3.5.1 (2018-07-02)
+    ## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+    ## Running under: macOS  10.14.2
+    ## 
+    ## Matrix products: default
+    ## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+    ## 
+    ## locale:
+    ## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
+    ## 
+    ## attached base packages:
+    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
+    ## 
+    ## other attached packages:
+    ##  [1] bindrcpp_0.2.2  jsonlite_1.5    magrittr_1.5    forcats_0.3.0  
+    ##  [5] stringr_1.3.1   dplyr_0.7.7     purrr_0.2.5     readr_1.1.1    
+    ##  [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.1.0   tidyverse_1.2.1
+    ## 
+    ## loaded via a namespace (and not attached):
+    ##  [1] Rcpp_1.0.0       cellranger_1.1.0 pillar_1.3.0     compiler_3.5.1  
+    ##  [5] plyr_1.8.4       bindr_0.1.1      tools_3.5.1      digest_0.6.18   
+    ##  [9] lubridate_1.7.4  evaluate_0.11    nlme_3.1-137     gtable_0.2.0    
+    ## [13] lattice_0.20-35  pkgconfig_2.0.2  rlang_0.3.0.1    cli_1.0.0       
+    ## [17] rstudioapi_0.8   yaml_2.2.0       haven_1.1.2      withr_2.1.2     
+    ## [21] xml2_1.2.0       httr_1.3.1       knitr_1.20       hms_0.4.2       
+    ## [25] rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5 glue_1.3.0      
+    ## [29] R6_2.3.0         fansi_0.3.0      readxl_1.1.0     rmarkdown_1.10  
+    ## [33] modelr_0.1.2     backports_1.1.2  scales_1.0.0     htmltools_0.3.6 
+    ## [37] rvest_0.3.2      assertthat_0.2.0 colorspace_1.3-2 labeling_0.3    
+    ## [41] utf8_1.1.4       stringi_1.2.4    lazyeval_0.2.1   munsell_0.5.0   
+    ## [45] broom_0.5.0      crayon_1.3.4

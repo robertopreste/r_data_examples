@@ -1,7 +1,7 @@
 USA.gov Data from Bitly
 ================
 Roberto Preste
-2018-09-06
+2019-01-13
 
 From the book (chapter 14.1):
 
@@ -28,8 +28,6 @@ path <- "../datasets/bitly_usagov/example.txt"
 records <- stream_in(file(path))
 ```
 
-    ## opening file input connection.
-
     ## 
      Found 500 records...
      Found 1000 records...
@@ -41,8 +39,6 @@ records <- stream_in(file(path))
      Found 3560 records...
      Imported 3560 records. Simplifying...
 
-    ## closing file input connection.
-
 Let's convert the `records` object to a tibble.
 
 ``` r
@@ -50,20 +46,24 @@ records %<>% as_tibble()
 ```
 
 ``` r
-head(records)
+records
 ```
 
-    ## # A tibble: 6 x 18
-    ##   a      c        nk tz    gr    g     h     l     al    hh    r     u    
-    ##   <chr>  <chr> <int> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr>
-    ## 1 Mozil… US        1 Amer… MA    A6qO… wfLQ… orof… en-U… 1.us… http… http…
-    ## 2 Googl… US        0 Amer… UT    mwsz… mwsz… bitly <NA>  j.mp  http… http…
-    ## 3 Mozil… US        1 Amer… DC    xxr3… xxr3… bitly en-US 1.us… http… http…
-    ## 4 Mozil… BR        0 Amer… 27    zCaL… zUtu… alel… pt-br 1.us… dire… http…
-    ## 5 Mozil… US        0 Amer… MA    9b6k… 9b6k… bitly en-U… bit.… http… http…
-    ## 6 Mozil… US        0 Amer… MA    axNK… axNK… bitly en-U… bit.… http… http…
-    ## # ... with 6 more variables: t <int>, hc <int>, cy <chr>, ll <list>,
-    ## #   `_heartbeat_` <int>, kw <chr>
+    ## # A tibble: 3,560 x 18
+    ##    a     c        nk tz    gr    g     h     l     al    hh    r     u    
+    ##  * <chr> <chr> <int> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr>
+    ##  1 Mozi… US        1 Amer… MA    A6qO… wfLQ… orof… en-U… 1.us… http… http…
+    ##  2 Goog… US        0 Amer… UT    mwsz… mwsz… bitly <NA>  j.mp  http… http…
+    ##  3 Mozi… US        1 Amer… DC    xxr3… xxr3… bitly en-US 1.us… http… http…
+    ##  4 Mozi… BR        0 Amer… 27    zCaL… zUtu… alel… pt-br 1.us… dire… http…
+    ##  5 Mozi… US        0 Amer… MA    9b6k… 9b6k… bitly en-U… bit.… http… http…
+    ##  6 Mozi… US        0 Amer… MA    axNK… axNK… bitly en-U… bit.… http… http…
+    ##  7 Mozi… PL        0 Euro… 77    wcnd… zkpJ… bnja… pl-P… 1.us… http… http…
+    ##  8 Mozi… <NA>      0 ""    <NA>  wcnd… zkpJ… bnja… bg,e… 1.us… http… http…
+    ##  9 Oper… <NA>      0 ""    <NA>  wcnd… zkpJ… bnja… en-U… 1.us… http… http…
+    ## 10 Mozi… <NA>      0 ""    <NA>  zCaL… zUtu… alel… pt-B… 1.us… http… http…
+    ## # ... with 3,550 more rows, and 6 more variables: t <int>, hc <int>,
+    ## #   cy <chr>, ll <list>, `_heartbeat_` <int>, kw <chr>
 
 Counting time zones
 -------------------
@@ -142,7 +142,7 @@ head(tz_counts, n = 10) %>%
     geom_col() + 
     coord_flip() + 
     guides(fill = F) + 
-    labs(title = "Top time zones", x = "Time zone", y = "Count")
+    labs(title = "Top time zones", x = "Time zone", y = "Count") 
 ```
 
 ![](usa_gov_data_files/figure-markdown_github/unnamed-chunk-11-1.png)
@@ -200,19 +200,24 @@ agg_counts <- records_notnull %>%
 ```
 
 ``` r
-head(agg_counts)
+agg_counts
 ```
 
-    ## # A tibble: 6 x 3
-    ## # Groups:   tz [6]
-    ##   tz                  NonWin   Win
-    ##   <chr>                <dbl> <dbl>
-    ## 1 Africa/Cairo             0     3
-    ## 2 Africa/Casablanca        0     1
-    ## 3 Africa/Ceuta             0     2
-    ## 4 Africa/Johannesburg      0     1
-    ## 5 Africa/Lusaka            0     1
-    ## 6 America/Anchorage        4     1
+    ## # A tibble: 97 x 3
+    ## # Groups:   tz [97]
+    ##    tz                             NonWin   Win
+    ##    <chr>                           <dbl> <dbl>
+    ##  1 Africa/Cairo                        0     3
+    ##  2 Africa/Casablanca                   0     1
+    ##  3 Africa/Ceuta                        0     2
+    ##  4 Africa/Johannesburg                 0     1
+    ##  5 Africa/Lusaka                       0     1
+    ##  6 America/Anchorage                   4     1
+    ##  7 America/Argentina/Buenos_Aires      1     0
+    ##  8 America/Argentina/Cordoba           0     1
+    ##  9 America/Argentina/Mendoza           0     1
+    ## 10 America/Bogota                      1     2
+    ## # ... with 87 more rows
 
 Let's add a `total` column that will be useful to sort our data based on the total number of users; for visualization purposes, we'll take the first 10 entries in this list.
 
@@ -240,7 +245,10 @@ count_subset %>%
     ggplot(aes(x = reorder(tz, users), y = users, fill = os)) + 
     geom_col(position = "dodge") + 
     coord_flip() + 
-    labs(x = "Time zone", y = "Users", title = "Windows and non-Windows users per time zone", fill = "OS")
+    labs(x = "Time zone", y = "Users", 
+         title = "Windows and non-Windows users per time zone", fill = "OS") + 
+    theme(legend.position = c(0.9, 0.14), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 ![](usa_gov_data_files/figure-markdown_github/unnamed-chunk-20-1.png)
@@ -261,7 +269,10 @@ count_subset %>%
     ggplot(aes(x = reorder(tz, users), y = normed_total, fill = os)) + 
     geom_col(position = "dodge") + 
     coord_flip() + 
-    labs(x = "Time zone", y = "User ratio", title = "Windows and non-Windows users ratio per time zone", fill = "OS")
+    labs(x = "Time zone", y = "User ratio", 
+         title = "Windows and non-Windows users ratio per time zone", fill = "OS") + 
+    theme(legend.position = c(0.9, 0.86), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 ![](usa_gov_data_files/figure-markdown_github/unnamed-chunk-22-1.png)
@@ -274,7 +285,7 @@ sessionInfo()
 
     ## R version 3.5.1 (2018-07-02)
     ## Platform: x86_64-apple-darwin15.6.0 (64-bit)
-    ## Running under: macOS High Sierra 10.13.6
+    ## Running under: macOS  10.14.2
     ## 
     ## Matrix products: default
     ## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
@@ -288,18 +299,18 @@ sessionInfo()
     ## 
     ## other attached packages:
     ##  [1] bindrcpp_0.2.2  jsonlite_1.5    magrittr_1.5    forcats_0.3.0  
-    ##  [5] stringr_1.3.1   dplyr_0.7.6     purrr_0.2.5     readr_1.1.1    
-    ##  [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+    ##  [5] stringr_1.3.1   dplyr_0.7.7     purrr_0.2.5     readr_1.1.1    
+    ##  [9] tidyr_0.8.1     tibble_1.4.2    ggplot2_3.1.0   tidyverse_1.2.1
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_0.12.18     cellranger_1.1.0 pillar_1.3.0     compiler_3.5.1  
-    ##  [5] plyr_1.8.4       bindr_0.1.1      tools_3.5.1      digest_0.6.15   
+    ##  [1] Rcpp_1.0.0       cellranger_1.1.0 pillar_1.3.0     compiler_3.5.1  
+    ##  [5] plyr_1.8.4       bindr_0.1.1      tools_3.5.1      digest_0.6.18   
     ##  [9] lubridate_1.7.4  evaluate_0.11    nlme_3.1-137     gtable_0.2.0    
-    ## [13] lattice_0.20-35  pkgconfig_2.0.1  rlang_0.2.1      cli_1.0.0       
-    ## [17] rstudioapi_0.7   yaml_2.2.0       haven_1.1.2      withr_2.1.2     
+    ## [13] lattice_0.20-35  pkgconfig_2.0.2  rlang_0.3.0.1    cli_1.0.0       
+    ## [17] rstudioapi_0.8   yaml_2.2.0       haven_1.1.2      withr_2.1.2     
     ## [21] xml2_1.2.0       httr_1.3.1       knitr_1.20       hms_0.4.2       
-    ## [25] rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.4 glue_1.3.0      
-    ## [29] R6_2.2.2         fansi_0.3.0      readxl_1.1.0     rmarkdown_1.10  
+    ## [25] rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5 glue_1.3.0      
+    ## [29] R6_2.3.0         fansi_0.3.0      readxl_1.1.0     rmarkdown_1.10  
     ## [33] modelr_0.1.2     backports_1.1.2  scales_1.0.0     htmltools_0.3.6 
     ## [37] rvest_0.3.2      assertthat_0.2.0 colorspace_1.3-2 labeling_0.3    
     ## [41] utf8_1.1.4       stringi_1.2.4    lazyeval_0.2.1   munsell_0.5.0   

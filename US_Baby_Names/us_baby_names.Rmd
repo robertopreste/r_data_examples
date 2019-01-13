@@ -2,7 +2,7 @@
 title: "US Baby Names 1880-2010"
 author: "Roberto Preste"
 date: "`r Sys.Date()`"
-output: html_notebook
+output: github_document
 editor_options: 
   chunk_output_type: inline
 ---
@@ -24,7 +24,7 @@ ___
 
 This dataset is split by year, so we'll assemble these files into a single dataframe, to which we'll add a new `year` column.  
 
-```{r}
+```{r, message=FALSE}
 years <- c(1880:2010)
 names <- tibble("name" = NA, "sex" = NA, "births" = NA, "year" = NA)
 
@@ -39,7 +39,7 @@ names %<>% drop_na()
 ```
 
 ```{r}
-head(names)
+names
 ```
 
 We can now start aggregating this data by year and sex.  
@@ -51,7 +51,7 @@ total_births <- names %>%
 ```
 
 ```{r}
-head(total_births)
+total_births
 ```
 
 
@@ -60,7 +60,10 @@ Let's plot these data to view the total number of births per sex from 1880.
 ```{r, dpi=200}
 total_births %>% ggplot(aes(x = year, y = tot_births, color = sex)) + 
     geom_line() + 
-    labs(x = "Year", y = "Births", title = "Total number of births per sex")
+    labs(x = "Year", y = "Births", 
+         title = "Total number of births per sex") + 
+    theme(legend.position = c(0.1, 0.86), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 Now we'll insert a new column that will contain the proportion of babies with each name relative to the total number of births for a given year.  
@@ -81,7 +84,7 @@ names %<>%
 ```
 
 ```{r}
-head(names)
+names
 ```
 
 
@@ -117,8 +120,11 @@ top1000 %>%
            (name == "Mary" & sex == "F") | (name == "Marilyn" & sex == "F")) %>% 
     ggplot(aes(x = year, y = births, color = name)) + 
     geom_line() + 
-    facet_grid(name ~ .) + 
-    labs(title = "Number of births per year", subtitle = "John, Harry, Mary, Marilyn") + 
+    facet_grid(name ~ ., scales = "free_y") + 
+    labs(x = "Year", y = "Births", 
+         title = "Number of births per year", 
+         subtitle = "John, Harry, Mary, Marilyn") + 
+    scale_x_continuous(breaks = c(1880, 1900, 1920, 1940, 1960, 1980, 2000)) + 
     guides(color = FALSE)
 ```
 
@@ -129,7 +135,12 @@ top1000 %>%
            (name == "Mary" & sex == "F") | (name == "Marilyn" & sex == "F")) %>% 
     ggplot(aes(x = year, y = births, color = name)) + 
     geom_line() + 
-    labs(title = "Number of births per year", subtitle = "John, Harry, Mary, Marilyn")
+    labs(x = "Year", y = "Births", 
+         title = "Number of births per year", 
+         subtitle = "John, Harry, Mary, Marilyn") + 
+    scale_x_continuous(breaks = c(1880, 1900, 1920, 1940, 1960, 1980, 2000)) + 
+    theme(legend.position = c(0.92, 0.8), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 ### Measuring the increase in naming diversity  
@@ -138,14 +149,18 @@ A possible explanation for the dicrease shown in the previous plots is that fewe
 
 Let's first plot the proportion of the top 1000 names to see their trend.  
 
-```{r}
+```{r, dpi=200}
 top1000 %>% 
     group_by(year, sex) %>% 
     summarise(tot_prop = sum(prop)) %>% 
     ggplot(aes(x = year, y = tot_prop, color = sex)) + 
     geom_line() + 
     scale_y_continuous(limits = c(0.0, 1.0)) + 
-    labs(y = "", title = "Sum of proportion of top 1000 common names")
+    scale_x_continuous(breaks = c(1880, 1900, 1920, 1940, 1960, 1980, 2000)) + 
+    labs(x = "Year", y = "", 
+         title = "Sum of proportion of top 1000 common names") + 
+    theme(legend.position = c(0.94, 0.16), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 This plot indeed shows a decrease in using common names roughly starting from the half of the 20^th^ century.  
@@ -160,7 +175,6 @@ df
 ```{r}
 df %<>% 
     arrange(desc(prop)) %>% 
-    group_by(year) %>% 
     mutate(cumprop = cumsum(prop)) 
 sum(df$cumprop <= 0.5) 
 ```
@@ -171,7 +185,6 @@ Now we can check the same amount for boys born in 1900.
 df <- boys %>% 
     filter(year == 1900)
 df %<>% arrange(desc(prop)) %>% 
-    group_by(year) %>% 
     mutate(cumprop = cumsum(prop))
 sum(df$cumprop <= 0.5)
 ```
@@ -179,6 +192,43 @@ sum(df$cumprop <= 0.5)
 Let's now apply this operation for every year/sex combination in the `top1000` dataset.  
 
 ```{r}
-app_cumprop <- function()
+get_quantile_count <- function(group, q = 0.5) {
+    group <- group %>% arrange(desc(prop)) %>% 
+        mutate(cumprop = cumsum(prop)) 
+    
+    return(sum(group$cumprop <= q))
+}
+```
+
+```{r}
+diversity <- top1000 %>% 
+    group_by(year, sex) %>% 
+    do(count = get_quantile_count(.)) %>% 
+    mutate(count = unlist(count)) 
+```
+
+```{r}
+diversity
+```
+
+This new dataframe can be plotted just like before.  
+
+```{r, dpi=200}
+diversity %>% 
+    ggplot(aes(x = year, y = count, color = sex)) + 
+    geom_line() + 
+    scale_x_continuous(breaks = c(1880, 1900, 1920, 1940, 1960, 1980, 2000)) + 
+    labs(x = "Year", y = "Count", 
+         title = "Number of popular names in top 50%") + 
+    theme(legend.position = c(0.1, 0.9), 
+          legend.background = element_rect(fill = "transparent"))
+```
+
+The plot shows that female names have always been much more diverse than male names, and this is even more evident in recent times.  
+
+___  
+
+```{r}
+sessionInfo()
 ```
 

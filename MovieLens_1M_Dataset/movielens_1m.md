@@ -1,7 +1,7 @@
 MovieLens 1M Dataset
 ================
 Roberto Preste
-2018-09-06
+2019-01-13
 
 From the book (chapter 14.2):
 
@@ -46,19 +46,23 @@ mov_data <- ratings %>%
 ```
 
 ``` r
-head(mov_data)
+mov_data
 ```
 
-    ## # A tibble: 6 x 10
-    ##   user_id movie_id rating timestamp gender   age occupation zip   title
-    ##     <int>    <int>  <int>     <int> <chr>  <int>      <int> <chr> <chr>
-    ## 1       1     1193      5 978300760 F          1         10 48067 One …
-    ## 2       1      661      3 978302109 F          1         10 48067 Jame…
-    ## 3       1      914      3 978301968 F          1         10 48067 My F…
-    ## 4       1     3408      4 978300275 F          1         10 48067 Erin…
-    ## 5       1     2355      5 978824291 F          1         10 48067 Bug'…
-    ## 6       1     1197      3 978302268 F          1         10 48067 Prin…
-    ## # ... with 1 more variable: genres <chr>
+    ## # A tibble: 1,000,386 x 10
+    ##    user_id movie_id rating timestamp gender   age occupation zip   title
+    ##      <int>    <int>  <int>     <int> <chr>  <int>      <int> <chr> <chr>
+    ##  1       1     1193      5 978300760 F          1         10 48067 One …
+    ##  2       1      661      3 978302109 F          1         10 48067 Jame…
+    ##  3       1      914      3 978301968 F          1         10 48067 My F…
+    ##  4       1     3408      4 978300275 F          1         10 48067 Erin…
+    ##  5       1     2355      5 978824291 F          1         10 48067 Bug'…
+    ##  6       1     1197      3 978302268 F          1         10 48067 Prin…
+    ##  7       1     1287      5 978302039 F          1         10 48067 Ben-…
+    ##  8       1     2804      5 978300719 F          1         10 48067 Chri…
+    ##  9       1      594      4 978302268 F          1         10 48067 Snow…
+    ## 10       1      919      4 978301368 F          1         10 48067 Wiza…
+    ## # ... with 1,000,376 more rows, and 1 more variable: genres <chr>
 
 Let's check the average rating for each movie grouped by gender of voting users.
 
@@ -71,19 +75,24 @@ mean_ratings <- mov_data %>%
 ```
 
 ``` r
-head(mean_ratings)
+mean_ratings
 ```
 
-    ## # A tibble: 6 x 3
-    ## # Groups:   title [6]
-    ##   title                             F     M
-    ##   <chr>                         <dbl> <dbl>
-    ## 1 ...And Justice for All (1979)  3.83  3.69
-    ## 2 'burbs, The (1989)             2.79  2.96
-    ## 3 'Night Mother (1986)           3.39  3.35
-    ## 4 'Til There Was You (1997)      2.68  2.73
-    ## 5 $1,000,000 Duck (1971)         3.38  2.76
-    ## 6 1-900 (1994)                   2     3
+    ## # A tibble: 3,883 x 3
+    ## # Groups:   title [3,883]
+    ##    title                                 F     M
+    ##    <chr>                             <dbl> <dbl>
+    ##  1 ...And Justice for All (1979)      3.83  3.69
+    ##  2 'burbs, The (1989)                 2.79  2.96
+    ##  3 'Night Mother (1986)               3.39  3.35
+    ##  4 'Til There Was You (1997)          2.68  2.73
+    ##  5 $1,000,000 Duck (1971)             3.38  2.76
+    ##  6 1-900 (1994)                       2     3   
+    ##  7 10 Things I Hate About You (1999)  3.65  3.31
+    ##  8 101 Dalmatians (1961)              3.79  3.5 
+    ##  9 101 Dalmatians (1996)              3.24  2.91
+    ## 10 12 Angry Men (1957)                4.18  4.33
+    ## # ... with 3,873 more rows
 
 We may want to filter this dataframe to keep only movies that were rated by at least 250 users. So let's get the total number of users that rated each movie.
 
@@ -94,18 +103,23 @@ ratings_by_title <- mov_data %>%
 ```
 
 ``` r
-head(ratings_by_title)
+ratings_by_title
 ```
 
-    ## # A tibble: 6 x 2
-    ##   title                         voting_users
-    ##   <chr>                                <int>
-    ## 1 ...And Justice for All (1979)          199
-    ## 2 'burbs, The (1989)                     303
-    ## 3 'Night Mother (1986)                    70
-    ## 4 'Til There Was You (1997)               52
-    ## 5 $1,000,000 Duck (1971)                  37
-    ## 6 1-900 (1994)                             2
+    ## # A tibble: 3,883 x 2
+    ##    title                             voting_users
+    ##    <chr>                                    <int>
+    ##  1 ...And Justice for All (1979)              199
+    ##  2 'burbs, The (1989)                         303
+    ##  3 'Night Mother (1986)                        70
+    ##  4 'Til There Was You (1997)                   52
+    ##  5 $1,000,000 Duck (1971)                      37
+    ##  6 1-900 (1994)                                 2
+    ##  7 10 Things I Hate About You (1999)          700
+    ##  8 101 Dalmatians (1961)                      565
+    ##  9 101 Dalmatians (1996)                      364
+    ## 10 12 Angry Men (1957)                        616
+    ## # ... with 3,873 more rows
 
 ``` r
 active_titles <- ratings_by_title %>% 
@@ -113,18 +127,23 @@ active_titles <- ratings_by_title %>%
 ```
 
 ``` r
-head(active_titles)
+active_titles
 ```
 
-    ## # A tibble: 6 x 2
-    ##   title                             voting_users
-    ##   <chr>                                    <int>
-    ## 1 'burbs, The (1989)                         303
-    ## 2 10 Things I Hate About You (1999)          700
-    ## 3 101 Dalmatians (1961)                      565
-    ## 4 101 Dalmatians (1996)                      364
-    ## 5 12 Angry Men (1957)                        616
-    ## 6 13th Warrior, The (1999)                   750
+    ## # A tibble: 1,216 x 2
+    ##    title                               voting_users
+    ##    <chr>                                      <int>
+    ##  1 'burbs, The (1989)                           303
+    ##  2 10 Things I Hate About You (1999)            700
+    ##  3 101 Dalmatians (1961)                        565
+    ##  4 101 Dalmatians (1996)                        364
+    ##  5 12 Angry Men (1957)                          616
+    ##  6 13th Warrior, The (1999)                     750
+    ##  7 2 Days in the Valley (1996)                  286
+    ##  8 20,000 Leagues Under the Sea (1954)          575
+    ##  9 2001: A Space Odyssey (1968)                1716
+    ## 10 2010 (1984)                                  470
+    ## # ... with 1,206 more rows
 
 Now we can get the mean rating for this new subset of movies.
 
@@ -201,19 +220,24 @@ high_ratings_male <- active_mean_ratings %>%
 ```
 
 ``` r
-head(high_ratings_male)
+high_ratings_male
 ```
 
-    ## # A tibble: 6 x 4
-    ## # Groups:   title [6]
-    ##   title                                      F     M mean_diff
-    ##   <chr>                                  <dbl> <dbl>     <dbl>
-    ## 1 Good, The Bad and The Ugly, The (1966)  3.49  4.22     0.726
-    ## 2 Kentucky Fried Movie, The (1977)        2.88  3.56     0.676
-    ## 3 Dumb & Dumber (1994)                    2.70  3.34     0.639
-    ## 4 Longest Day, The (1962)                 3.41  4.03     0.620
-    ## 5 Cable Guy, The (1996)                   2.25  2.86     0.614
-    ## 6 Evil Dead II (Dead By Dawn) (1987)      3.30  3.91     0.612
+    ## # A tibble: 1,216 x 4
+    ## # Groups:   title [1,216]
+    ##    title                                      F     M mean_diff
+    ##    <chr>                                  <dbl> <dbl>     <dbl>
+    ##  1 Good, The Bad and The Ugly, The (1966)  3.49  4.22     0.726
+    ##  2 Kentucky Fried Movie, The (1977)        2.88  3.56     0.676
+    ##  3 Dumb & Dumber (1994)                    2.70  3.34     0.639
+    ##  4 Longest Day, The (1962)                 3.41  4.03     0.620
+    ##  5 Cable Guy, The (1996)                   2.25  2.86     0.614
+    ##  6 Evil Dead II (Dead By Dawn) (1987)      3.30  3.91     0.612
+    ##  7 Hidden, The (1987)                      3.14  3.75     0.607
+    ##  8 Rocky III (1982)                        2.36  2.94     0.582
+    ##  9 Caddyshack (1980)                       3.40  3.97     0.574
+    ## 10 For a Few Dollars More (1965)           3.41  3.95     0.545
+    ## # ... with 1,206 more rows
 
 ``` r
 high_ratings_female <- active_mean_ratings %>% 
@@ -221,19 +245,24 @@ high_ratings_female <- active_mean_ratings %>%
 ```
 
 ``` r
-head(high_ratings_female)
+high_ratings_female
 ```
 
-    ## # A tibble: 6 x 4
-    ## # Groups:   title [6]
-    ##   title                         F     M mean_diff
-    ##   <chr>                     <dbl> <dbl>     <dbl>
-    ## 1 Dirty Dancing (1987)       3.79  2.96    -0.831
-    ## 2 Jumpin' Jack Flash (1986)  3.25  2.58    -0.676
-    ## 3 Grease (1978)              3.98  3.37    -0.608
-    ## 4 Little Women (1994)        3.87  3.32    -0.549
-    ## 5 Steel Magnolias (1989)     3.90  3.37    -0.536
-    ## 6 Anastasia (1997)           3.8   3.28    -0.518
+    ## # A tibble: 1,216 x 4
+    ## # Groups:   title [1,216]
+    ##    title                                     F     M mean_diff
+    ##    <chr>                                 <dbl> <dbl>     <dbl>
+    ##  1 Dirty Dancing (1987)                   3.79  2.96    -0.831
+    ##  2 Jumpin' Jack Flash (1986)              3.25  2.58    -0.676
+    ##  3 Grease (1978)                          3.98  3.37    -0.608
+    ##  4 Little Women (1994)                    3.87  3.32    -0.549
+    ##  5 Steel Magnolias (1989)                 3.90  3.37    -0.536
+    ##  6 Anastasia (1997)                       3.8   3.28    -0.518
+    ##  7 Rocky Horror Picture Show, The (1975)  3.67  3.16    -0.513
+    ##  8 Color Purple, The (1985)               4.16  3.66    -0.499
+    ##  9 Age of Innocence, The (1993)           3.83  3.34    -0.488
+    ## 10 Free Willy (1993)                      2.92  2.44    -0.483
+    ## # ... with 1,206 more rows
 
 Movies that elicited the most disagreement among all viewers (both male and female) can be found by exploiting the standard deviation of ratings.
 
@@ -277,7 +306,7 @@ sessionInfo()
 
     ## R version 3.5.1 (2018-07-02)
     ## Platform: x86_64-apple-darwin15.6.0 (64-bit)
-    ## Running under: macOS High Sierra 10.13.6
+    ## Running under: macOS  10.14.2
     ## 
     ## Matrix products: default
     ## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
@@ -291,18 +320,18 @@ sessionInfo()
     ## 
     ## other attached packages:
     ##  [1] bindrcpp_0.2.2  magrittr_1.5    forcats_0.3.0   stringr_1.3.1  
-    ##  [5] dplyr_0.7.6     purrr_0.2.5     readr_1.1.1     tidyr_0.8.1    
-    ##  [9] tibble_1.4.2    ggplot2_3.0.0   tidyverse_1.2.1
+    ##  [5] dplyr_0.7.7     purrr_0.2.5     readr_1.1.1     tidyr_0.8.1    
+    ##  [9] tibble_1.4.2    ggplot2_3.1.0   tidyverse_1.2.1
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_0.12.18     cellranger_1.1.0 pillar_1.3.0     compiler_3.5.1  
-    ##  [5] plyr_1.8.4       bindr_0.1.1      tools_3.5.1      digest_0.6.15   
+    ##  [1] Rcpp_1.0.0       cellranger_1.1.0 pillar_1.3.0     compiler_3.5.1  
+    ##  [5] plyr_1.8.4       bindr_0.1.1      tools_3.5.1      digest_0.6.18   
     ##  [9] lubridate_1.7.4  jsonlite_1.5     evaluate_0.11    nlme_3.1-137    
-    ## [13] gtable_0.2.0     lattice_0.20-35  pkgconfig_2.0.1  rlang_0.2.1     
-    ## [17] cli_1.0.0        rstudioapi_0.7   yaml_2.2.0       haven_1.1.2     
+    ## [13] gtable_0.2.0     lattice_0.20-35  pkgconfig_2.0.2  rlang_0.3.0.1   
+    ## [17] cli_1.0.0        rstudioapi_0.8   yaml_2.2.0       haven_1.1.2     
     ## [21] withr_2.1.2      xml2_1.2.0       httr_1.3.1       knitr_1.20      
-    ## [25] hms_0.4.2        rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.4
-    ## [29] glue_1.3.0       R6_2.2.2         fansi_0.3.0      readxl_1.1.0    
+    ## [25] hms_0.4.2        rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5
+    ## [29] glue_1.3.0       R6_2.3.0         fansi_0.3.0      readxl_1.1.0    
     ## [33] rmarkdown_1.10   modelr_0.1.2     backports_1.1.2  scales_1.0.0    
     ## [37] htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0 colorspace_1.3-2
     ## [41] utf8_1.1.4       stringi_1.2.4    lazyeval_0.2.1   munsell_0.5.0   

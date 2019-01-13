@@ -26,7 +26,7 @@ This dataset is split over 3 files, containing different information. The `movie
 
 To my knowledge, no `R` package is capable of reading a file with double characters as column delimiter, as is in this case, where each column in the files is delimited using `::`. For this reason, we are first going to read in the entire raw files, replace occurrences of `::` with `_`, and then parse the datasets using a classic `read_delim`. Any other delimiter can be used instead of `_`, as long as it is not already present in the file (otherwise you will have issues when trying to load the data).  
 
-```{r}
+```{r, message=FALSE}
 users <- read_file("../datasets/movielens/users.dat") %>% 
     str_replace_all("::", "_") %>% 
     read_delim(delim = "_", col_names = c("user_id", "gender", "age", "occupation", "zip"))
@@ -49,7 +49,7 @@ mov_data <- ratings %>%
 ```
 
 ```{r}
-head(mov_data)
+mov_data
 ```
 
 
@@ -64,7 +64,7 @@ mean_ratings <- mov_data %>%
 ```
 
 ```{r}
-head(mean_ratings)
+mean_ratings
 ```
 
 
@@ -77,7 +77,7 @@ ratings_by_title <- mov_data %>%
 ```
 
 ```{r}
-head(ratings_by_title)
+ratings_by_title
 ```
 
 
@@ -87,7 +87,7 @@ active_titles <- ratings_by_title %>%
 ```
 
 ```{r}
-head(active_titles)
+active_titles
 ```
 
 
@@ -137,7 +137,7 @@ high_ratings_male <- active_mean_ratings %>%
 ```
 
 ```{r}
-head(high_ratings_male)
+high_ratings_male
 ```
 
 ```{r}
@@ -146,7 +146,7 @@ high_ratings_female <- active_mean_ratings %>%
 ```
 
 ```{r}
-head(high_ratings_female)
+high_ratings_female
 ```
 
 

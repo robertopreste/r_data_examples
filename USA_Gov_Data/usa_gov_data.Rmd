@@ -26,7 +26,7 @@ ___
 The dataset is in [JSON](https://www.json.org) format, so it is imported using the `jsonlite` package. Its `fromJSON` function however does not work in this case, since this is a NDJSON file, meaning that multiple JSON objects are contained in the same file.  
 We will use the `stream_in` function to load the dataset instead.  
 
-```{r}
+```{r, message=FALSE}
 path <- "../datasets/bitly_usagov/example.txt"
 records <- stream_in(file(path))
 ```
@@ -38,7 +38,7 @@ records %<>% as_tibble()
 ```
 
 ```{r}
-head(records)
+records
 ```
 
 
@@ -89,7 +89,7 @@ head(tz_counts, n = 10) %>%
     geom_col() + 
     coord_flip() + 
     guides(fill = F) + 
-    labs(title = "Top time zones", x = "Time zone", y = "Count")
+    labs(title = "Top time zones", x = "Time zone", y = "Count") 
 ```
 
 Let's parse the `a` column to get some information about the most commonly used browsers.  
@@ -130,7 +130,7 @@ agg_counts <- records_notnull %>%
 ```
 
 ```{r}
-head(agg_counts)
+agg_counts
 ```
 
 Let's add a `total` column that will be useful to sort our data based on the total number of users; for visualization purposes, we'll take the first 10 entries in this list.  
@@ -159,7 +159,10 @@ count_subset %>%
     ggplot(aes(x = reorder(tz, users), y = users, fill = os)) + 
     geom_col(position = "dodge") + 
     coord_flip() + 
-    labs(x = "Time zone", y = "Users", title = "Windows and non-Windows users per time zone", fill = "OS")
+    labs(x = "Time zone", y = "Users", 
+         title = "Windows and non-Windows users per time zone", fill = "OS") + 
+    theme(legend.position = c(0.9, 0.14), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 Let's normalize the count of users so the sum of Windows and non-Windows users is 1.  
@@ -178,7 +181,10 @@ count_subset %>%
     ggplot(aes(x = reorder(tz, users), y = normed_total, fill = os)) + 
     geom_col(position = "dodge") + 
     coord_flip() + 
-    labs(x = "Time zone", y = "User ratio", title = "Windows and non-Windows users ratio per time zone", fill = "OS")
+    labs(x = "Time zone", y = "User ratio", 
+         title = "Windows and non-Windows users ratio per time zone", fill = "OS") + 
+    theme(legend.position = c(0.9, 0.86), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 ___  

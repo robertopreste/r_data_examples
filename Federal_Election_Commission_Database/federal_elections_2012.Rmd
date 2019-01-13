@@ -1,8 +1,8 @@
 ---
 title: "2012 Federal Election Commission Database"
-output: github_document
 author: "Roberto Preste"
 date: "`r Sys.Date()`"
+output: github_document
 editor_options: 
   chunk_output_type: inline
 ---
@@ -24,12 +24,12 @@ ___
 
 This is a version of the above-mentioned dataset downloaded in June 2012.  
 
-```{r}
+```{r, message=FALSE}
 fec <- read_csv("../datasets/fec/P00000001-ALL.csv")
 ```
 
 ```{r}
-head(fec)
+fec
 ```
 
 We can add another column to report if the candidate is a Republican or Democrat. In order to do that, we will simply add `"Democrat"` to every Barack Obama entry, and `"Republican"` to all the others.  
@@ -48,7 +48,7 @@ fec %<>%
 ```
 
 ```{r}
-head(fec)
+fec
 ```
 
 
@@ -73,22 +73,47 @@ fec %>%
 We should clean a bit these data, because some of them refer to the same type of employment but are encoded differently.  
 
 ```{r}
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "INFORMATION REQUESTED PER BEST EFFORTS", replacement = "NOT PROVIDED")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "INFORMATION REQUESTED", replacement = "NOT PROVIDED")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "INFORMATION REQUESTED (BEST EFFORTS)", replacement = "NOT PROVIDED")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^NONE$", replacement = "NOT PROVIDED")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^REFUSED$", replacement = "NOT PROVIDED")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^REQUESTED$", replacement = "NOT PROVIDED")
-fec %<>% replace_na(list(contbr_employer = "NOT PROVIDED", contbr_occupation = "NOT PROVIDED"))
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^N/A$", replacement = "NOT PROVIDED") 
-
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^C.E.O.$", replacement = "CEO")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^RN$", replacement = "REGISTERED NURSE") 
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^R.N.$", replacement = "REGISTERED NURSE") 
-
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^UNEMPLOYED$", replacement = "NOT EMPLOYED")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^SELF$", replacement = "SELF-EMPLOYED") 
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "SELF EMPLOYED", replacement = "SELF-EMPLOYED") 
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "INFORMATION REQUESTED PER BEST EFFORTS", 
+                   replacement = "NOT PROVIDED")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "INFORMATION REQUESTED", 
+                   replacement = "NOT PROVIDED")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "INFORMATION REQUESTED (BEST EFFORTS)", 
+                   replacement = "NOT PROVIDED")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^NONE$", 
+                   replacement = "NOT PROVIDED")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^REFUSED$", 
+                   replacement = "NOT PROVIDED")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^REQUESTED$", 
+                   replacement = "NOT PROVIDED")
+fec %<>% replace_na(list(contbr_employer = "NOT PROVIDED", 
+                         contbr_occupation = "NOT PROVIDED"))
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^N/A$", 
+                   replacement = "NOT PROVIDED") 
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^C.E.O.$", 
+                   replacement = "CEO")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^RN$", 
+                   replacement = "REGISTERED NURSE") 
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^R.N.$", 
+                   replacement = "REGISTERED NURSE") 
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^UNEMPLOYED$", 
+                   replacement = "NOT EMPLOYED")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^SELF$", 
+                   replacement = "SELF-EMPLOYED") 
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "SELF EMPLOYED", 
+                   replacement = "SELF-EMPLOYED") 
 ```
 
 ```{r}
@@ -113,7 +138,7 @@ fec_mrbo <- fec %>%
 ```
 
 ```{r}
-head(fec_mrbo)
+fec_mrbo
 ```
 
 
@@ -137,7 +162,10 @@ over_2mm %>%
     ggplot(aes(x = reorder(contbr_occupation, donations))) + 
     geom_col(aes(y = donations, fill = party), position = "dodge") + 
     coord_flip() +
-    labs(x = "Occupation", y = "Donations (US$)", fill = "Party", title = "Total donations by party per occupation")
+    labs(x = "Occupation", y = "Donations (US$)", fill = "Party", 
+         title = "Total donations by party per occupation") + 
+    theme(legend.position = c(0.9, 0.14), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 Now we might be interested in aggregating these data by candidate name and occupation or employer, to find the top 10 occupations and employers who donated to the two candidates.  
@@ -163,7 +191,10 @@ top_10_occup %>%
     ggplot(aes(x = reorder(contbr_occupation, donations))) + 
     geom_col(aes(y = donations, fill = cand_nm), position = "dodge") + 
     coord_flip() + 
-    labs(x = "Occupation", y = "Donations (US$)", fill = "Candidate", title = "Top 10 donating occupations")
+    labs(x = "Occupation", y = "Donations (US$)", fill = "Candidate", 
+         title = "Top 10 donating occupations") + 
+    theme(legend.position = c(0.88, 0.14), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 ```{r, dpi=200}
@@ -171,7 +202,10 @@ top_10_empl %>%
     ggplot(aes(x = reorder(contbr_employer, donations))) + 
     geom_col(aes(y = donations, fill = cand_nm), position = "dodge") + 
     coord_flip() + 
-    labs(x = "Employer", y = "Donations (US$)", fill = "Candidate", title = "Top 10 donating employers")
+    labs(x = "Employer", y = "Donations (US$)", fill = "Candidate", 
+         title = "Top 10 donating employers") + 
+    theme(legend.position = c(0.86, 0.14), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 
@@ -202,10 +236,14 @@ contrib_grouped
 contrib_grouped %>% 
     filter(donation_perc != 1.0) %>% 
     ggplot(aes(x = contb_bin)) + 
-    geom_col(aes(y = donation_perc, fill = cand_nm)) + 
+    geom_col(aes(y = donation_perc, fill = cand_nm), position = "dodge") + 
     coord_flip() + 
-    labs(x = "Donation bins", y = "Percentage of donations", fill = "Candidate", title = "Percentage of donations received per each donation size") + 
-    scale_x_discrete(labels = c("(0, 1]", "(1, 10]", "(10, 100]", "(100, 1000]", "(1000, 10000]", "(10000, 100000]"))
+    labs(x = "Donation bins", y = "Percentage of donations", fill = "Candidate", 
+         title = "Percentage of donations received per each donation size") + 
+    scale_x_discrete(labels = c("(0, 1]", "(1, 10]", "(10, 100]", "(100, 1000]", "(1000, 10000]", "(10000, 100000]")) + 
+    scale_y_continuous(breaks = c(0.0, 0.2, 0.4, 0.6, 0.8)) + 
+    theme(legend.position = c(0.88, 0.88), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 
@@ -224,13 +262,23 @@ state_grouped <- fec_mrbo %>%
 state_grouped
 ```
 
+And finally a (quite messy) visualization of these data.  
+
 ```{r, fig.height=3, dpi=200}
 state_grouped %>% 
     filter(donation_perc != 1.0, donation_perc >= 0.1, donation_perc <= 0.9) %>% 
     ggplot(aes(x = contbr_st)) + 
     geom_col(aes(y = donation_perc, fill = cand_nm), position = "dodge") + 
     coord_flip() + 
-    labs(x = "US State", y = "Percentage of donations", fill = "Candidate", title = "Percentage of donations by state")
+    labs(x = "US State", y = "Percentage of donations", fill = "Candidate", 
+         title = "Percentage of donations by state") + 
+    theme(legend.position = c(0.92, 0.56), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
+___  
+
+```{r}
+sessionInfo()
+```
 

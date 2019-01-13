@@ -1,7 +1,7 @@
 2012 Federal Election Commission Database
 ================
 Roberto Preste
-2018-09-08
+2019-01-13
 
 From the book (chapter 14.5):
 
@@ -25,43 +25,27 @@ This is a version of the above-mentioned dataset downloaded in June 2012.
 fec <- read_csv("../datasets/fec/P00000001-ALL.csv")
 ```
 
-    ## Parsed with column specification:
-    ## cols(
-    ##   cmte_id = col_character(),
-    ##   cand_id = col_character(),
-    ##   cand_nm = col_character(),
-    ##   contbr_nm = col_character(),
-    ##   contbr_city = col_character(),
-    ##   contbr_st = col_character(),
-    ##   contbr_zip = col_character(),
-    ##   contbr_employer = col_character(),
-    ##   contbr_occupation = col_character(),
-    ##   contb_receipt_amt = col_double(),
-    ##   contb_receipt_dt = col_character(),
-    ##   receipt_desc = col_character(),
-    ##   memo_cd = col_character(),
-    ##   memo_text = col_character(),
-    ##   form_tp = col_character(),
-    ##   file_num = col_integer()
-    ## )
-
 ``` r
-head(fec)
+fec
 ```
 
-    ## # A tibble: 6 x 16
-    ##   cmte_id cand_id cand_nm contbr_nm contbr_city contbr_st contbr_zip
-    ##   <chr>   <chr>   <chr>   <chr>     <chr>       <chr>     <chr>     
-    ## 1 C00410… P20002… Bachma… HARVEY, … MOBILE      AL        366010290 
-    ## 2 C00410… P20002… Bachma… HARVEY, … MOBILE      AL        366010290 
-    ## 3 C00410… P20002… Bachma… SMITH, L… LANETT      AL        368633403 
-    ## 4 C00410… P20002… Bachma… BLEVINS,… PIGGOTT     AR        724548253 
-    ## 5 C00410… P20002… Bachma… WARDENBU… HOT SPRING… AR        719016467 
-    ## 6 C00410… P20002… Bachma… BECKMAN,… SPRINGDALE  AR        727647190 
-    ## # ... with 9 more variables: contbr_employer <chr>,
-    ## #   contbr_occupation <chr>, contb_receipt_amt <dbl>,
-    ## #   contb_receipt_dt <chr>, receipt_desc <chr>, memo_cd <chr>,
-    ## #   memo_text <chr>, form_tp <chr>, file_num <int>
+    ## # A tibble: 1,001,731 x 16
+    ##    cmte_id cand_id cand_nm contbr_nm contbr_city contbr_st contbr_zip
+    ##    <chr>   <chr>   <chr>   <chr>     <chr>       <chr>     <chr>     
+    ##  1 C00410… P20002… Bachma… HARVEY, … MOBILE      AL        366010290 
+    ##  2 C00410… P20002… Bachma… HARVEY, … MOBILE      AL        366010290 
+    ##  3 C00410… P20002… Bachma… SMITH, L… LANETT      AL        368633403 
+    ##  4 C00410… P20002… Bachma… BLEVINS,… PIGGOTT     AR        724548253 
+    ##  5 C00410… P20002… Bachma… WARDENBU… HOT SPRING… AR        719016467 
+    ##  6 C00410… P20002… Bachma… BECKMAN,… SPRINGDALE  AR        727647190 
+    ##  7 C00410… P20002… Bachma… BLEVINS,… PIGGOTT     AR        724548253 
+    ##  8 C00410… P20002… Bachma… BLEVINS,… PIGGOTT     AR        724548253 
+    ##  9 C00410… P20002… Bachma… COLLINS,… MESA        AZ        852106725 
+    ## 10 C00410… P20002… Bachma… COLEMAN,… TUCSON      AZ        857498865 
+    ## # ... with 1,001,721 more rows, and 9 more variables:
+    ## #   contbr_employer <chr>, contbr_occupation <chr>,
+    ## #   contb_receipt_amt <dbl>, contb_receipt_dt <chr>, receipt_desc <chr>,
+    ## #   memo_cd <chr>, memo_text <chr>, form_tp <chr>, file_num <int>
 
 We can add another column to report if the candidate is a Republican or Democrat. In order to do that, we will simply add `"Democrat"` to every Barack Obama entry, and `"Republican"` to all the others.
 
@@ -79,22 +63,27 @@ fec %<>%
 ```
 
 ``` r
-head(fec)
+fec
 ```
 
-    ## # A tibble: 6 x 17
-    ##   cmte_id cand_id cand_nm contbr_nm contbr_city contbr_st contbr_zip
-    ##   <chr>   <chr>   <chr>   <chr>     <chr>       <chr>     <chr>     
-    ## 1 C00410… P20002… Bachma… HARVEY, … MOBILE      AL        366010290 
-    ## 2 C00410… P20002… Bachma… HARVEY, … MOBILE      AL        366010290 
-    ## 3 C00410… P20002… Bachma… SMITH, L… LANETT      AL        368633403 
-    ## 4 C00410… P20002… Bachma… BLEVINS,… PIGGOTT     AR        724548253 
-    ## 5 C00410… P20002… Bachma… WARDENBU… HOT SPRING… AR        719016467 
-    ## 6 C00410… P20002… Bachma… BECKMAN,… SPRINGDALE  AR        727647190 
-    ## # ... with 10 more variables: contbr_employer <chr>,
-    ## #   contbr_occupation <chr>, contb_receipt_amt <dbl>,
-    ## #   contb_receipt_dt <chr>, receipt_desc <chr>, memo_cd <chr>,
-    ## #   memo_text <chr>, form_tp <chr>, file_num <int>, party <chr>
+    ## # A tibble: 991,475 x 17
+    ##    cmte_id cand_id cand_nm contbr_nm contbr_city contbr_st contbr_zip
+    ##    <chr>   <chr>   <chr>   <chr>     <chr>       <chr>     <chr>     
+    ##  1 C00410… P20002… Bachma… HARVEY, … MOBILE      AL        366010290 
+    ##  2 C00410… P20002… Bachma… HARVEY, … MOBILE      AL        366010290 
+    ##  3 C00410… P20002… Bachma… SMITH, L… LANETT      AL        368633403 
+    ##  4 C00410… P20002… Bachma… BLEVINS,… PIGGOTT     AR        724548253 
+    ##  5 C00410… P20002… Bachma… WARDENBU… HOT SPRING… AR        719016467 
+    ##  6 C00410… P20002… Bachma… BECKMAN,… SPRINGDALE  AR        727647190 
+    ##  7 C00410… P20002… Bachma… BLEVINS,… PIGGOTT     AR        724548253 
+    ##  8 C00410… P20002… Bachma… BLEVINS,… PIGGOTT     AR        724548253 
+    ##  9 C00410… P20002… Bachma… COLLINS,… MESA        AZ        852106725 
+    ## 10 C00410… P20002… Bachma… COLEMAN,… TUCSON      AZ        857498865 
+    ## # ... with 991,465 more rows, and 10 more variables:
+    ## #   contbr_employer <chr>, contbr_occupation <chr>,
+    ## #   contb_receipt_amt <dbl>, contb_receipt_dt <chr>, receipt_desc <chr>,
+    ## #   memo_cd <chr>, memo_text <chr>, form_tp <chr>, file_num <int>,
+    ## #   party <chr>
 
 Donation statistics by Occupation and Employer
 ----------------------------------------------
@@ -148,22 +137,47 @@ fec %>%
 We should clean a bit these data, because some of them refer to the same type of employment but are encoded differently.
 
 ``` r
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "INFORMATION REQUESTED PER BEST EFFORTS", replacement = "NOT PROVIDED")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "INFORMATION REQUESTED", replacement = "NOT PROVIDED")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "INFORMATION REQUESTED (BEST EFFORTS)", replacement = "NOT PROVIDED")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^NONE$", replacement = "NOT PROVIDED")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^REFUSED$", replacement = "NOT PROVIDED")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^REQUESTED$", replacement = "NOT PROVIDED")
-fec %<>% replace_na(list(contbr_employer = "NOT PROVIDED", contbr_occupation = "NOT PROVIDED"))
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^N/A$", replacement = "NOT PROVIDED") 
-
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^C.E.O.$", replacement = "CEO")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^RN$", replacement = "REGISTERED NURSE") 
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^R.N.$", replacement = "REGISTERED NURSE") 
-
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^UNEMPLOYED$", replacement = "NOT EMPLOYED")
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "^SELF$", replacement = "SELF-EMPLOYED") 
-fec %<>% mutate_if(is_character, str_replace_all, pattern = "SELF EMPLOYED", replacement = "SELF-EMPLOYED") 
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "INFORMATION REQUESTED PER BEST EFFORTS", 
+                   replacement = "NOT PROVIDED")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "INFORMATION REQUESTED", 
+                   replacement = "NOT PROVIDED")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "INFORMATION REQUESTED (BEST EFFORTS)", 
+                   replacement = "NOT PROVIDED")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^NONE$", 
+                   replacement = "NOT PROVIDED")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^REFUSED$", 
+                   replacement = "NOT PROVIDED")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^REQUESTED$", 
+                   replacement = "NOT PROVIDED")
+fec %<>% replace_na(list(contbr_employer = "NOT PROVIDED", 
+                         contbr_occupation = "NOT PROVIDED"))
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^N/A$", 
+                   replacement = "NOT PROVIDED") 
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^C.E.O.$", 
+                   replacement = "CEO")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^RN$", 
+                   replacement = "REGISTERED NURSE") 
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^R.N.$", 
+                   replacement = "REGISTERED NURSE") 
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^UNEMPLOYED$", 
+                   replacement = "NOT EMPLOYED")
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "^SELF$", 
+                   replacement = "SELF-EMPLOYED") 
+fec %<>% mutate_if(is_character, str_replace_all, 
+                   pattern = "SELF EMPLOYED", 
+                   replacement = "SELF-EMPLOYED") 
 ```
 
 ``` r
@@ -218,22 +232,27 @@ fec_mrbo <- fec %>%
 ```
 
 ``` r
-head(fec_mrbo)
+fec_mrbo
 ```
 
-    ## # A tibble: 6 x 17
-    ##   cmte_id cand_id cand_nm contbr_nm contbr_city contbr_st contbr_zip
-    ##   <chr>   <chr>   <chr>   <chr>     <chr>       <chr>     <chr>     
-    ## 1 C00431… P80003… Romney… ELDERBAU… DPO         AA        340230183 
-    ## 2 C00431… P80003… Romney… ELDERBAU… DPO         AA        340230183 
-    ## 3 C00431… P80003… Romney… CARLSEN,… APO         AE        091280020 
-    ## 4 C00431… P80003… Romney… DELUCA, … APO         AE        091280005 
-    ## 5 C00431… P80003… Romney… SARGENT,… APO         AE        090120092 
-    ## 6 C00431… P80003… Romney… WILSON, … DPO         AE        098700023 
-    ## # ... with 10 more variables: contbr_employer <chr>,
-    ## #   contbr_occupation <chr>, contb_receipt_amt <dbl>,
-    ## #   contb_receipt_dt <chr>, receipt_desc <chr>, memo_cd <chr>,
-    ## #   memo_text <chr>, form_tp <chr>, file_num <int>, party <chr>
+    ## # A tibble: 694,282 x 17
+    ##    cmte_id cand_id cand_nm contbr_nm contbr_city contbr_st contbr_zip
+    ##    <chr>   <chr>   <chr>   <chr>     <chr>       <chr>     <chr>     
+    ##  1 C00431… P80003… Romney… ELDERBAU… DPO         AA        340230183 
+    ##  2 C00431… P80003… Romney… ELDERBAU… DPO         AA        340230183 
+    ##  3 C00431… P80003… Romney… CARLSEN,… APO         AE        091280020 
+    ##  4 C00431… P80003… Romney… DELUCA, … APO         AE        091280005 
+    ##  5 C00431… P80003… Romney… SARGENT,… APO         AE        090120092 
+    ##  6 C00431… P80003… Romney… WILSON, … DPO         AE        098700023 
+    ##  7 C00431… P80003… Romney… GRIFFIS,… APO         AE        091280011 
+    ##  8 C00431… P80003… Romney… SARGENT,… APO         AE        090120092 
+    ##  9 C00431… P80003… Romney… GRIFFIS,… APO         AE        091280011 
+    ## 10 C00431… P80003… Romney… DELUCA, … APO         AE        091280005 
+    ## # ... with 694,272 more rows, and 10 more variables:
+    ## #   contbr_employer <chr>, contbr_occupation <chr>,
+    ## #   contb_receipt_amt <dbl>, contb_receipt_dt <chr>, receipt_desc <chr>,
+    ## #   memo_cd <chr>, memo_text <chr>, form_tp <chr>, file_num <int>,
+    ## #   party <chr>
 
 Now we can aggregate the data by occupation and party, and further filter it to keep only occupations that donated over $2 million.
 
@@ -255,7 +274,10 @@ over_2mm %>%
     ggplot(aes(x = reorder(contbr_occupation, donations))) + 
     geom_col(aes(y = donations, fill = party), position = "dodge") + 
     coord_flip() +
-    labs(x = "Occupation", y = "Donations (US$)", fill = "Party", title = "Total donations by party per occupation")
+    labs(x = "Occupation", y = "Donations (US$)", fill = "Party", 
+         title = "Total donations by party per occupation") + 
+    theme(legend.position = c(0.9, 0.14), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 ![](federal_elections_2012_files/figure-markdown_github/unnamed-chunk-16-1.png)
@@ -283,7 +305,10 @@ top_10_occup %>%
     ggplot(aes(x = reorder(contbr_occupation, donations))) + 
     geom_col(aes(y = donations, fill = cand_nm), position = "dodge") + 
     coord_flip() + 
-    labs(x = "Occupation", y = "Donations (US$)", fill = "Candidate", title = "Top 10 donating occupations")
+    labs(x = "Occupation", y = "Donations (US$)", fill = "Candidate", 
+         title = "Top 10 donating occupations") + 
+    theme(legend.position = c(0.88, 0.14), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 ![](federal_elections_2012_files/figure-markdown_github/unnamed-chunk-19-1.png)
@@ -293,7 +318,10 @@ top_10_empl %>%
     ggplot(aes(x = reorder(contbr_employer, donations))) + 
     geom_col(aes(y = donations, fill = cand_nm), position = "dodge") + 
     coord_flip() + 
-    labs(x = "Employer", y = "Donations (US$)", fill = "Candidate", title = "Top 10 donating employers")
+    labs(x = "Employer", y = "Donations (US$)", fill = "Candidate", 
+         title = "Top 10 donating employers") + 
+    theme(legend.position = c(0.86, 0.14), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 ![](federal_elections_2012_files/figure-markdown_github/unnamed-chunk-20-1.png)
@@ -345,10 +373,14 @@ contrib_grouped
 contrib_grouped %>% 
     filter(donation_perc != 1.0) %>% 
     ggplot(aes(x = contb_bin)) + 
-    geom_col(aes(y = donation_perc, fill = cand_nm)) + 
+    geom_col(aes(y = donation_perc, fill = cand_nm), position = "dodge") + 
     coord_flip() + 
-    labs(x = "Donation bins", y = "Percentage of donations", fill = "Candidate", title = "Percentage of donations received per each donation size") + 
-    scale_x_discrete(labels = c("(0, 1]", "(1, 10]", "(10, 100]", "(100, 1000]", "(1000, 10000]", "(10000, 100000]"))
+    labs(x = "Donation bins", y = "Percentage of donations", fill = "Candidate", 
+         title = "Percentage of donations received per each donation size") + 
+    scale_x_discrete(labels = c("(0, 1]", "(1, 10]", "(10, 100]", "(100, 1000]", "(1000, 10000]", "(10000, 100000]")) + 
+    scale_y_continuous(breaks = c(0.0, 0.2, 0.4, 0.6, 0.8)) + 
+    theme(legend.position = c(0.88, 0.88), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 ![](federal_elections_2012_files/figure-markdown_github/unnamed-chunk-24-1.png)
@@ -385,13 +417,57 @@ state_grouped
     ## 10 AP        Obama, Barack    37130.       0.957  
     ## # ... with 116 more rows
 
+And finally a (quite messy) visualization of these data.
+
 ``` r
 state_grouped %>% 
     filter(donation_perc != 1.0, donation_perc >= 0.1, donation_perc <= 0.9) %>% 
     ggplot(aes(x = contbr_st)) + 
     geom_col(aes(y = donation_perc, fill = cand_nm), position = "dodge") + 
     coord_flip() + 
-    labs(x = "US State", y = "Percentage of donations", fill = "Candidate", title = "Percentage of donations by state")
+    labs(x = "US State", y = "Percentage of donations", fill = "Candidate", 
+         title = "Percentage of donations by state") + 
+    theme(legend.position = c(0.92, 0.56), 
+          legend.background = element_rect(fill = "transparent"))
 ```
 
 ![](federal_elections_2012_files/figure-markdown_github/unnamed-chunk-27-1.png)
+
+------------------------------------------------------------------------
+
+``` r
+sessionInfo()
+```
+
+    ## R version 3.5.1 (2018-07-02)
+    ## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+    ## Running under: macOS  10.14.2
+    ## 
+    ## Matrix products: default
+    ## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+    ## 
+    ## locale:
+    ## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
+    ## 
+    ## attached base packages:
+    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
+    ## 
+    ## other attached packages:
+    ##  [1] bindrcpp_0.2.2  magrittr_1.5    forcats_0.3.0   stringr_1.3.1  
+    ##  [5] dplyr_0.7.7     purrr_0.2.5     readr_1.1.1     tidyr_0.8.1    
+    ##  [9] tibble_1.4.2    ggplot2_3.1.0   tidyverse_1.2.1
+    ## 
+    ## loaded via a namespace (and not attached):
+    ##  [1] Rcpp_1.0.0       cellranger_1.1.0 pillar_1.3.0     compiler_3.5.1  
+    ##  [5] plyr_1.8.4       bindr_0.1.1      tools_3.5.1      digest_0.6.18   
+    ##  [9] lubridate_1.7.4  jsonlite_1.5     evaluate_0.11    nlme_3.1-137    
+    ## [13] gtable_0.2.0     lattice_0.20-35  pkgconfig_2.0.2  rlang_0.3.0.1   
+    ## [17] cli_1.0.0        rstudioapi_0.8   yaml_2.2.0       haven_1.1.2     
+    ## [21] withr_2.1.2      xml2_1.2.0       httr_1.3.1       knitr_1.20      
+    ## [25] hms_0.4.2        rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5
+    ## [29] glue_1.3.0       R6_2.3.0         fansi_0.3.0      readxl_1.1.0    
+    ## [33] rmarkdown_1.10   modelr_0.1.2     backports_1.1.2  scales_1.0.0    
+    ## [37] htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0 colorspace_1.3-2
+    ## [41] labeling_0.3     utf8_1.1.4       stringi_1.2.4    lazyeval_0.2.1  
+    ## [45] munsell_0.5.0    broom_0.5.0      crayon_1.3.4

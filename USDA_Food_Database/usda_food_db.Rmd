@@ -9,7 +9,7 @@ editor_options:
 
 From the book (chapter 14.4):  
 
->The US Department of Agriculture makes available a database of food nutrient infor‐ mation. Programmer Ashley Williams made available a version of this database in JSON format.  
+>The US Department of Agriculture makes available a database of food nutrient information. Programmer Ashley Williams made available a version of this database in JSON format.  
 
 ___
 
@@ -25,13 +25,13 @@ ___
 
 This data come from the US Department of Agriculture and report a set of food nutrient information. These data were made available by Ashley Williams in JSON format, where each food has a number of identifying attributes along with two lists of nutrients and portion sizes.  
 
-```{r}
+```{r, message=FALSE}
 path <- "../datasets/usda_food/database.json"
 db <- as_tibble(fromJSON(path, flatten = T))
 ```
 
 ```{r}
-head(db)
+db
 ```
 
 Some of the features in this dataset are actually nested dataframes, as in `nutrients`.  
@@ -114,12 +114,8 @@ result %>%
     labs(x = "Food group", y = "Median value", title = "Median Zinc content")
 ```
 
-We can also check which food is most dense in each nutrient.  
+___ 
 
 ```{r}
-by_nutrient <- ndata %>% 
-    group_by(nutgroup, nutrient) %>% 
-    summarise(max_value = max(value))
+sessionInfo()
 ```
-
-
