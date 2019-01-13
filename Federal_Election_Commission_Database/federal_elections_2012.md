@@ -22,7 +22,7 @@ Loading the data
 This is a version of the above-mentioned dataset downloaded in June 2012.
 
 ``` r
-fec <- read_csv("../datasets/fec/P00000001-ALL.csv")
+fec <- read_csv("https://raw.githubusercontent.com/wesm/pydata-book/2nd-edition/datasets/fec/P00000001-ALL.csv")
 ```
 
 ``` r
@@ -463,11 +463,11 @@ sessionInfo()
     ##  [5] plyr_1.8.4       bindr_0.1.1      tools_3.5.1      digest_0.6.18   
     ##  [9] lubridate_1.7.4  jsonlite_1.5     evaluate_0.11    nlme_3.1-137    
     ## [13] gtable_0.2.0     lattice_0.20-35  pkgconfig_2.0.2  rlang_0.3.0.1   
-    ## [17] cli_1.0.0        rstudioapi_0.8   yaml_2.2.0       haven_1.1.2     
-    ## [21] withr_2.1.2      xml2_1.2.0       httr_1.3.1       knitr_1.20      
-    ## [25] hms_0.4.2        rprojroot_1.3-2  grid_3.5.1       tidyselect_0.2.5
-    ## [29] glue_1.3.0       R6_2.3.0         fansi_0.3.0      readxl_1.1.0    
-    ## [33] rmarkdown_1.10   modelr_0.1.2     backports_1.1.2  scales_1.0.0    
-    ## [37] htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0 colorspace_1.3-2
-    ## [41] labeling_0.3     utf8_1.1.4       stringi_1.2.4    lazyeval_0.2.1  
-    ## [45] munsell_0.5.0    broom_0.5.0      crayon_1.3.4
+    ## [17] cli_1.0.0        rstudioapi_0.8   curl_3.2         yaml_2.2.0      
+    ## [21] haven_1.1.2      withr_2.1.2      xml2_1.2.0       httr_1.3.1      
+    ## [25] knitr_1.20       hms_0.4.2        rprojroot_1.3-2  grid_3.5.1      
+    ## [29] tidyselect_0.2.5 glue_1.3.0       R6_2.3.0         fansi_0.3.0     
+    ## [33] readxl_1.1.0     rmarkdown_1.10   modelr_0.1.2     backports_1.1.2 
+    ## [37] scales_1.0.0     htmltools_0.3.6  rvest_0.3.2      assertthat_0.2.0
+    ## [41] colorspace_1.3-2 labeling_0.3     utf8_1.1.4       stringi_1.2.4   
+    ## [45] lazyeval_0.2.1   munsell_0.5.0    broom_0.5.0      crayon_1.3.4

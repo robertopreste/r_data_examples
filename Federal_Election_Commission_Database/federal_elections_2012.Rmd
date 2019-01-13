@@ -25,7 +25,7 @@ ___
 This is a version of the above-mentioned dataset downloaded in June 2012.  
 
 ```{r, message=FALSE}
-fec <- read_csv("../datasets/fec/P00000001-ALL.csv")
+fec <- read_csv("https://raw.githubusercontent.com/wesm/pydata-book/2nd-edition/datasets/fec/P00000001-ALL.csv")
 ```
 
 ```{r}
