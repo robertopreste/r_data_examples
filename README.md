@@ -2,7 +2,9 @@
 R Data Examples
 ===============
 
-This repo contains a series of examples of data analysis and visualisation from the book [Python for Data Analysis](https://www.oreilly.com/library/view/python-for-data/9781491957653/), but reproduced using R!
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/robertopreste/r_data_examples/master)
+
+This repo contains a series of examples of data analysis and visualisation from the book [**Python for Data Analysis**](https://www.oreilly.com/library/view/python-for-data/9781491957653/), but reproduced using R!
 
 Examples come from Chapter 14 of the book, which provides very useful applications of some Python modules like `pandas` and `matplotlib` to load, wrangle, manipulate and visualise data.
 
@@ -24,9 +26,11 @@ There are different options to view the documents, pick the one you like most!
 
 -   Each of these examples was developed as an R Markdown document, `knit`ted to a `github_document`, so you can simply open the `.md` file right from GitHub.
 
--   If you clone the repo locally, you can view a static HTML version of the notebooks by opening the `.nb.html` files in your browser.
+-   Or you can clone the repo on your machine and open the `.Rmd` file in RStudio to play with it.
 
--   Each example is also available as a Jupyter notebook, so you can click on the **launch binder** button above to launch a [Binder](https://mybinder.org) session, which allows to play with the examples interactively.
+-   If you clone the repo locally, you can view a static HTML version of the notebooks by opening the `.nb.html` file in your browser.
+
+-   Each example is also available as a Jupyter notebook (`.ipynb`), so you can click on the [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/robertopreste/r_data_examples/master) button to launch a [Binder](https://mybinder.org) session, which allows to play with the examples interactively.
 
 ### Datasets
 
